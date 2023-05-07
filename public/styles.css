@@ -1,0 +1,103 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background-color: #eaf8de;
+}
+
+h1 {
+  font-family: 'Sigmar', cursive;
+  font-size: 75px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+input {
+  width: 500px;
+}
+
+#logo {
+  height: 25px;
+  float: left;
+  margin-right: 5px;
+}
+
+#login-button {
+  margin-right: 5px;
+}
+
+#cart-button,
+#login-button {
+  float: right;
+}
+
+#product-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+/******************* product page css ********************/
+
+#product-page {
+  /* display: flex; */
+}
+
+#product-description {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/*********************************************************/
+
+.product {
+  border: solid 5px black;
+  background-color: white;
+  margin: 10px;
+  width: 300px;
+}
+
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 20px;
+}
+
+.product img {
+  height: 300px;
+  width: 300px;
+}
+
+.hidden {
+  display: none;
+}
+
+#login-pic {
+  height: 100px;
+}
+
+.back-button {
+  width: 10%;
+  height: 30px;
+}
+
+#real-login-button, #signup-button {
+  width: 10%;
+  height: 25px;
+}
+
+#login-page {
+  text-align: center;
+}
+
+#login-box {
+  margin-top: 200px;
+}

@@ -3,6 +3,9 @@
 
   window.addEventListener("load", init);
 
+  /**
+   * add function comment
+  */
   function init() {
     let loginButton = qs("#login-button");
     let loginBackButton = qs("#login-back-button");
@@ -14,21 +17,26 @@
       productButton[i].addEventListener("click", switchProductView);
     }
     productBackButton.addEventListener("click", switchProductView);
+
     // make function for search
-    id("search-button").addEventListener("click", doSomething);
+    // id("search-button").addEventListener("click", doSomething);
     // make function for cart
-    id("cart-button").addEventListener("click", doSomething);
+    // id("cart-button").addEventListener("click", doSomething);
     // make funtion for adding to cart
-    id("add-to-cart-button").addEventListener("click", doSomething);
+    // id("add-to-cart-button").addEventListener("click", doSomething);
   }
 
-  // send user to login page
+  /**
+   * send user to login page
+  */
   function switchLoginView() {
     id("menu-page").classList.toggle("hidden");
     id("login-page").classList.toggle("hidden");
   }
 
-  // send user to login page
+  /**
+   * send user to login page
+  */
   function switchProductView() {
     id("menu-page").classList.toggle("hidden");
     id("product-page").classList.toggle("hidden");

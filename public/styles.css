@@ -42,19 +42,11 @@ input {
   justify-content: space-evenly;
 }
 
-/******************* product page css ********************/
-
-#product-page {
-  /* display: flex; */
-}
-
 #product-description {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-
-/*********************************************************/
 
 .product {
   border: solid 5px black;

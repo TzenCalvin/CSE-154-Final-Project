@@ -52,7 +52,7 @@ Snake Plant:snake-plant
       "color": "green",
       "manageability": "very simple"
     },
-    "image": "images/snake-plant.jpg"
+    "image": "images/snake-plant.png"
 }
 ```
 
@@ -85,7 +85,7 @@ Snake Plant:snake-plant
         "quantity": 2,
         "price": 5,
         "total-price": 10,
-        "image": "images/snake-plant.jpg"
+        "image": "images/snake-plant.png"
       },
       {
         "name": "Cactus",
@@ -93,7 +93,7 @@ Snake Plant:snake-plant
         "quantity": 3,
         "price": 6,
         "total-price": 18,
-        "image": "images/cactus.jpg"
+        "image": "images/cactus.png"
       }
     ],
     "transac-price": 28
@@ -121,6 +121,56 @@ Snake Plant:snake-plant
 
 **Example Response:**
 ```json
+{
+    "uid": 21566325,
+    "transactions": [
+      {
+        "tid": 5652198622,
+        "items": [
+          {
+            "name": "Snake Plant",
+            "shortname": "snake-plant",
+            "quantity": 2,
+            "price": 5,
+            "total-price": 10,
+            "image": "images/snake-plant.png"
+          },
+          {
+            "name": "Cactus",
+            "shortname": "cactus",
+            "quantity": 3,
+            "price": 6,
+            "total-price": 18,
+            "image": "images/cactus.png"
+          }
+        ],
+        "transac-price": 28
+      }
+      {
+        "tid": 1234567890,
+        "items": [
+          {
+            "name": "ZZ Plant",
+            "shortname": "zz-plant",
+            "quantity": 2,
+            "price": 5,
+            "total-price": 10,
+            "image": "images/zz-plant.png"
+          },
+          {
+            "name": "Snake Plant",
+            "shortname": "snake-plant",
+            "quantity": 3,
+            "price": 5,
+            "total-price": 15,
+            "image": "images/snake-plant.png"
+          }
+        ],
+        "transac-price": 25
+      }
+    ],
+
+}
 
 ```
 

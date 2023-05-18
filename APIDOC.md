@@ -145,7 +145,7 @@ Snake Plant:snake-plant
           }
         ],
         "transac-price": 28
-      }
+      },
       {
         "tid": 1234567890,
         "items": [
@@ -169,7 +169,6 @@ Snake Plant:snake-plant
         "transac-price": 25
       }
     ],
-
 }
 
 ```

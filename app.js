@@ -19,6 +19,8 @@ app.use(multer().none());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+//add get all endpoint
+
 app.use(express.static('public'));
 const PORT = process.env.PORT || 8000;
 app.listen(PORT);

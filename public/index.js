@@ -41,10 +41,10 @@
         products[i].classList.remove('product-card');
         products[i].classList.add('product-list-item');
       }
-      let productsInfo = qsa('#main-view-products article section');
-      for (let i = 0; i < products.length; i++) {
-        products[i].classList.remove('product-info-grid');
-        products[i].classList.add('product-info-list');
+      let productsInfo = qsa('#main-view-products section');
+      for (let i = 0; i < productsInfo.length; i++) {
+        productsInfo[i].classList.remove('product-info-grid');
+        productsInfo[i].classList.add('product-info-list');
       }
     } else {
       id('main-view-products').classList.remove('product-list');
@@ -54,10 +54,10 @@
         products[i].classList.remove('product-list-item');
         products[i].classList.add('product-card');
       }
-      let productsInfo = qsa('#main-view-products article section');
-      for (let i = 0; i < products.length; i++) {
-        products[i].classList.remove('product-info-list');
-        products[i].classList.add('product-info-grid');
+      let productsInfo = qsa('#main-view-products section');
+      for (let i = 0; i < productsInfo.length; i++) {
+        productsInfo[i].classList.remove('product-info-list');
+        productsInfo[i].classList.add('product-info-grid');
       }
     }
   }

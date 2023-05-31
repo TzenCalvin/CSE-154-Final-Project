@@ -23,36 +23,38 @@
       <h1>Welcome!</h1>
     </section>
     <h2>Most Succulent Deals</h2>
-    <section id="product-preview">
-      <article class="product">
+    <section class="product-grid">
+      <article class="product-card">
         <img src='images/snake-plant.png' alt='snake plant'>
-        <section class="product-info">
+        <section class="product-info-grid">
           <p>Snake plant</p>
           <p>$5</p>
         </section>
       </article>
-      <article class="product">
-        <img src="images/pothos-plant.png" alt="pothos plant">
-        <section class="product-info">
+      <article class="product-card">
+        <img src="images/pothos.png" alt="pothos plant">
+        <section class="product-info-grid">
           <p>Pothos plant</p>
           <p>$5</p>
         </section>
       </article>
-      <article class="product">
+      <article class="product-card">
         <img src='images/zz-plant.png' alt='zz plant'>
-        <section class="product-info">
+        <section class="product-info-grid">
           <p>ZZ plant</p>
           <p>$5</p>
         </section>
       </article>
     </section>
+    <section class="center">
+      <button id="view-all">View All Products</button>
+    </section>
   </section>
 
-  <section id="main-view">
-    <h2>All Products</h2>
-    <section id="main-view-products">
-
-    </section>
+  <section id="main-view" class="hidden">
+    <button id="main-view-back-button" class="back-button">Back</button>
+    <button id="layout-button">Change layout</button>
+    <section id="main-view-products" class="product-grid"></section>
   </section>
 
   <section id="product-page" class="hidden">

@@ -36,6 +36,7 @@ async function getDBConnection() {
   return db;
 }
 
+// gets all of the products' names, shortnames, and prices
 app.get('/all/products', async (req, res) => {
   try {
     let db = await getDBConnection();

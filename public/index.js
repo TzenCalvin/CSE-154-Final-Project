@@ -32,33 +32,30 @@
      */
   }
 
+  /**
+   * Switches the layout of all of the products between a grid and a list layout.
+   */
   function toggleLayout() {
+    let currentView = '';
+    let newView = '';
     if (id('main-view-products').classList.contains('product-grid')) {
-      id('main-view-products').classList.remove('product-grid');
-      id('main-view-products').classList.add('product-list');
-      let products = qsa('#main-view-products article');
-      for (let i = 0; i < products.length; i++) {
-        products[i].classList.remove('product-card');
-        products[i].classList.add('product-list-item');
-      }
-      let productsInfo = qsa('#main-view-products section');
-      for (let i = 0; i < productsInfo.length; i++) {
-        productsInfo[i].classList.remove('product-info-grid');
-        productsInfo[i].classList.add('product-info-list');
-      }
+      currentView = 'product-grid';
+      newView = 'product-list';
     } else {
-      id('main-view-products').classList.remove('product-list');
-      id('main-view-products').classList.add('product-grid');
-      let products = qsa('#main-view-products article');
-      for (let i = 0; i < products.length; i++) {
-        products[i].classList.remove('product-list-item');
-        products[i].classList.add('product-card');
-      }
-      let productsInfo = qsa('#main-view-products section');
-      for (let i = 0; i < productsInfo.length; i++) {
-        productsInfo[i].classList.remove('product-info-list');
-        productsInfo[i].classList.add('product-info-grid');
-      }
+      currentView = 'product-list';
+      newView = 'product-grid';
+    }
+    id('main-view-products').classList.remove(currentView);
+    id('main-view-products').classList.add(newView);
+    let products = qsa('#main-view-products article');
+    for (let i = 0; i < products.length; i++) {
+      products[i].classList.remove(currentView + '-item');
+      products[i].classList.add(newView + '-item');
+    }
+    let productsInfo = qsa('#main-view-products section');
+    for (let i = 0; i < productsInfo.length; i++) {
+      productsInfo[i].classList.remove(currentView + '-info');
+      productsInfo[i].classList.add(newView + '-info');
     }
   }
 
@@ -81,12 +78,12 @@
       allProducts = await allProducts.json();
       displayAllProducts(allProducts);
     } catch (err) {
-      console.log(err);
+      handleError();
     }
   }
 
   /**
-   * Display all of the products from the API.
+   * Display all of the products' images, names, and prices from the API.
    * @param {JSON} allProducts - all of the products names, shortnames, and prices
    */
   function displayAllProducts(allProducts) {
@@ -94,13 +91,13 @@
     id('main-view').classList.remove('hidden');
     for (let i = 0; i < allProducts.length; i++) {
       let product = gen('article');
-      product.classList.add('product-card');
+      product.classList.add('product-grid-item');
       let image = gen('img');
       image.src = 'images/' + allProducts[i].shortname + '.png';
       image.alt = allProducts[i].name;
       product.appendChild(image);
       let info = gen('section');
-      info.classList.add('product-info-grid');
+      info.classList.add('product-grid-info');
       let name = gen('p');
       name.textContent = allProducts[i].name;
       info.appendChild(name);
@@ -126,6 +123,19 @@
   function switchProductView() {
     id("menu-page").classList.toggle("hidden");
     id("product-page").classList.toggle("hidden");
+  }
+
+  /**
+   * Switches the current webpage view to the error page if an error occurs.
+   */
+  function handleError() {
+    let pages = qsa('body section');
+    for (let i = 0; i < pages.length; i++) {
+      if (!pages[i].classList.contains('hidden')) {
+        pages[i].classList.add('hidden');
+      }
+    }
+    id('error-page').classList.remove('hidden');
   }
 
   /**

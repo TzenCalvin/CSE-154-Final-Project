@@ -10,14 +10,16 @@
   function init() {
     let loginButton = qs("#login-button");
     let loginBackButton = qs("#login-back-button");
-    let productButton = qsa(".product");
+    let mainViewBackButton = qs("#main-view-back-button");
+    let productGridButton = qsa(".product-grid-item");
     let productBackButton = qs("#product-back-button");
     loginButton.addEventListener("click", switchLoginView);
+    mainViewBackButton.addEventListener("click", mainViewGoBack);
     loginBackButton.addEventListener("click", switchLoginView);
-    for (let i = 0; i < productButton.length; i++) {
-      productButton[i].addEventListener("click", switchProductView);
+    for (let i = 0; i < productGridButton.length; i++) {
+      productGridButton[i].addEventListener("click", switchToProduct);
     }
-    productBackButton.addEventListener("click", switchProductView);
+    productBackButton.addEventListener("click", switchToMain);
     id('view-all').addEventListener('click', requestAllProducts);
     id('main-view-back-button').addEventListener('click', goHome);
     id('layout-button').addEventListener('click', toggleLayout);
@@ -51,6 +53,7 @@
     for (let i = 0; i < products.length; i++) {
       products[i].classList.remove(currentView + '-item');
       products[i].classList.add(newView + '-item');
+      products[i].addEventListener("click", switchToProduct);
     }
     let productsInfo = qsa('#main-view-products section');
     for (let i = 0; i < productsInfo.length; i++) {
@@ -91,6 +94,7 @@
     id('main-view').classList.remove('hidden');
     for (let i = 0; i < allProducts.length; i++) {
       let product = gen('article');
+      product.id = allProducts[i].shortname;
       product.classList.add('product-grid-item');
       let image = gen('img');
       image.src = 'images/' + allProducts[i].shortname + '.png';
@@ -112,7 +116,7 @@
   /**
    * send user to login page
    */
-  function switchLoginView() {
+   function switchLoginView() {
     id("menu-page").classList.toggle("hidden");
     id("login-page").classList.toggle("hidden");
   }
@@ -120,10 +124,78 @@
   /**
    * send user to login page
    */
-  function switchProductView() {
-    id("menu-page").classList.toggle("hidden");
-    id("product-page").classList.toggle("hidden");
+  function switchToProduct() {
+    id("menu-page").classList.add("hidden");
+    id("main-view").classList.add("hidden");
+    id("login-page").classList.add("hidden");
+    id("product-page").classList.remove("hidden");
+
+    fetch("/all/products/" + this.id)
+    .then(statusCheck)
+    .then(res => res.json())
+    .then(populateProduct)
+    .catch(handleError);
   }
+
+  function switchToMain() {
+    id("product-page").classList.add("hidden");
+    id("main-view").classList.remove("hidden");
+  }
+
+  function mainViewGoBack() {
+    id("main-page").classList.add("hidden");
+    id("main-view").classList.remove("hidden");
+    id("main-view-products").innerHTML = "";
+    id("main-view-products").classList.remove("product-list");
+    id("main-view-products").classList.add("product-grid");
+  }
+
+  function populateProduct(info) {
+    let img = id("product-img");
+    let name = id("product-name");
+    let desc = id("product-description");
+    let price = id("product-price");
+    let size = id("product-size");
+    let color = id("product-color");
+
+    img.src = "images/" + info.shortname + ".png";
+    img.alt = info.shortname;
+    name.textContent = info.name;
+    desc.textContent = info.description;
+    price.textContent = "Price: $" + info.price;
+    size.textContent = "Pot size: " + info["pot-size"] + "in";
+    color.textContent = "Color: " + info.color;
+
+    differentDetails(info);
+  }
+
+  function differentDetails(info) {
+    let height = id("product-height");
+    let flowers = id("product-flowers");
+    let manageability = id("product-manageability");
+    let stock = id("product-stock");
+
+    if (info["item-type"] === "plant") {
+      height.classList.remove("hidden");
+      flowers.classList.remove("hidden");
+      manageability.classList.remove("hidden");
+    } else {
+      height.classList.add("hidden");
+      flowers.classList.add("hidden");
+      manageability.classList.add("hidden");
+    }
+
+    height.textContent = "Starting height: " + info["plant-height"] + "in";
+    flowers.textContent = "Ability to flower: " + info.flowers;
+    manageability.textContent = "Manageability: " + info.manageability;
+
+    if (info.capacity) {
+      stock.textContent = "Limited supply: " + info.capacity + " plants remaining."
+    } else {
+      stock.textContent = "No limit."
+    }
+  }
+
 
   /**
    * Switches the current webpage view to the error page if an error occurs.

@@ -11,14 +11,16 @@
 </head>
 
 <body>
-  <section id="menu-page">
-    <section id='top-bar'>
-      <img id="logo" src="images/plant-logo.png" alt="makeshift logo">
-      <input type="text" placeholder="Search for the perfect plant!">
+  <header>
+    <img id="logo" src="images/plant-logo.png" alt="makeshift logo">
+    <nav>
+      <input type="text" placeholder="Search for the perfect plant">
       <button id="search-button">Search</button>
-      <button id="cart-button">Cart</button>
+      <button id="cart-button" class="hidden">Cart</button>
       <button id="login-button">Log in</button>
-    </section>
+    </nav>
+  </header>
+  <section id="menu-page">
     <section>
       <h1>Welcome!</h1>
     </section>
@@ -61,14 +63,24 @@
     <section>
       <button id="product-back-button" class="back-button">Back</button>
     </section>
-    <img src="images/snake-plant.png" alt="snake plant" class="product">
-    <section id="product-description">
-      <h2>Plant Name</h2>
-      <p>Plant Description</p>
-      <p>Plant Price</p>
-      <button id="add-to-cart-button">Add item to cart</button>
-    </section>
+    <div class="flex-container">
+      <img src="" alt="" class="product" id="product-img">
+      <section id="product-details">
+        <h3 id="product-name"></h3>
+        <p id="product-description"></p>
+        <p id="product-price"></p>
+        <p id="product-size"></p>
+        <p id="product-height"></p>
+        <p id="product-color"></p>
+        <p id="product-flowers"></p>
+        <p id="product-manageability"></p>
+        <p id="product-stock"></p>
+      </section>
+    </div>
+    <button id="add-to-cart-button">Add item to cart</button>
   </section>
+
+
   <section id="login-page" class="hidden">
     <section>
       <button id="login-back-button" class="back-button">Back</button>

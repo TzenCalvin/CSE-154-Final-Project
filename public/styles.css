@@ -66,7 +66,6 @@ input {
   border: solid 5px black;
   background-color: white;
   margin: 10px;
-  margin-bottom: 50px;
   width: 300px;
 }
 
@@ -75,7 +74,7 @@ input {
   justify-content: space-between;
   padding-left: 10px;
   padding-right: 10px;
-  font-size: 30px;
+  font-size: 20px;
 }
 
 .product-grid-info p, .product-list-info p {
@@ -147,4 +146,13 @@ input {
 
 #login-box {
   margin-top: 200px;
+}
+
+.flex-container {
+  display: flex;
+}
+
+#product-img {
+  height: 300px;
+  width: 300px;
 }

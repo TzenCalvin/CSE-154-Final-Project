@@ -8,19 +8,16 @@
    * function comment
    */
   function init() {
-    let loginButton = qs("#login-button");
-    let loginBackButton = qs("#login-back-button");
+    id("login-back-button").addEventListener("click", switchLoginView);
     let productButton = qsa(".product");
-    let productBackButton = qs("#product-back-button");
-    loginButton.addEventListener("click", switchLoginView);
-    loginBackButton.addEventListener("click", switchLoginView);
     for (let i = 0; i < productButton.length; i++) {
       productButton[i].addEventListener("click", switchProductView);
     }
-    productBackButton.addEventListener("click", switchProductView);
+    id("product-back-button").addEventListener("click", switchProductView);
     id('view-all').addEventListener('click', requestAllProducts);
     id('main-view-back-button').addEventListener('click', goHome);
     id('layout-button').addEventListener('click', toggleLayout);
+    id('login-button').addEventListener('click', promptLogin);
 
     /**
      * make function for search
@@ -30,6 +27,50 @@
      * make funtion for adding to cart
      * id("add-to-cart-button").addEventListener("click", doSomething);
      */
+  }
+
+  /**
+   * Sends the user to the login page and takes in user input to log them in.
+   */
+  function promptLogin() {
+    hideAll();
+    id("login-page").classList.remove("hidden");
+    if (window.localStorage.getItem('username')) {
+      id('username').value = window.localStorage.getItem('username');
+    }
+    qs('#login-page form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      loginUser();
+    });
+  }
+
+  /**
+   * Using the data inputed by the user either logs them in and send them back to
+   * the homepage, or asks them to input the correct information or create a new
+   * account.
+   */
+  async function loginUser() {
+    let data = new FormData();
+    data.append('username', id('username').value);
+    data.append('password', id('password').value);
+    try {
+      let loginStatus = await fetch('/user/login', {method: 'POST', body: data});
+      await statusCheck(loginStatus);
+      loginStatus = await loginStatus.text();
+      if (loginStatus === 'success') {
+        window.localStorage.setItem('username', '' + id('username').value);
+        hideAll();
+        id('menu-page').classList.remove('hidden');
+        id('login-button').classList.add('hidden');
+        id('cart-button').classList.remove('hidden');
+      }
+    } catch (err) {
+      let errorMessage = gen('p');
+      errorMessage.classList.add('error-message');
+      errorMessage.textContent = err;
+      errorMessage.textContent = errorMessage.textContent.substring(7);
+      id('login-page-elements').insertBefore(errorMessage, qs('#login-page-elements section'));
+    }
   }
 
   /**
@@ -66,6 +107,8 @@
     id('main-view').classList.add('hidden');
     id('menu-page').classList.remove('hidden');
     id('main-view-products').innerHTML = '';
+    id('main-view-products').classList.remove('product-list');
+    id('main-view-products').classList.add('product-grid');
   }
 
   /**
@@ -126,15 +169,22 @@
   }
 
   /**
-   * Switches the current webpage view to the error page if an error occurs.
+   * Adds the class 'hidden' to all of the pages on the website.
    */
-  function handleError() {
-    let pages = qsa('body section');
+  function hideAll() {
+    let pages = qsa('body > section');
     for (let i = 0; i < pages.length; i++) {
       if (!pages[i].classList.contains('hidden')) {
         pages[i].classList.add('hidden');
       }
     }
+  }
+
+  /**
+   * Switches the current webpage view to the error page if an error occurs.
+   */
+  function handleError() {
+    hideAll();
     id('error-page').classList.remove('hidden');
   }
 

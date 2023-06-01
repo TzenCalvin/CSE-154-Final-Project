@@ -21,6 +21,7 @@ app.use(express.json());
 
 const SERVER_SIDE_ERROR_MSG = 'Oh no! An error occurred on the server. Try again later.';
 const SERVER_SIDE_ERROR_STATUS_CODE = 500;
+const CLIENT_SIDE_ERROR_STATUS_CODE = 400;
 
 /**
  * Establishes a database connection to the database and returns the database object.
@@ -42,7 +43,34 @@ app.get('/all/products', async (req, res) => {
     let db = await getDBConnection();
     let qry = 'SELECT name, shortname, price FROM products';
     let result = await db.all(qry);
+    await db.close();
     res.type('json').send(result);
+  } catch (err) {
+    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+  }
+});
+
+// checks to see if the username and password are in the database
+app.post('/user/login', async (req, res) => {
+  try {
+    if (req.body.username && req.body.password) {
+      let qry = 'SELECT username FROM users WHERE username = ? AND password = ?';
+      let db = await getDBConnection();
+      let result = await db.all(qry, [req.body.username, req.body.password]);
+      await db.close();
+      if (result.length === 0) {
+        res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+        res.type('text').send('Uh oh! The given username and password do not exist. ' +
+          'Please make sure you\'ve entered your information in correctly, otherwise ' +
+          'please click the sign up button to create a new account.');
+      } else {
+        res.type('text').send('success');
+      }
+    } else {
+      res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+      res.type('text').send('Missing username and/or password.');
+    }
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
     res.type('text').send(SERVER_SIDE_ERROR_MSG);

@@ -16,8 +16,26 @@ h1, h2 {
   text-align: center;
 }
 
+#login-page-elements {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5em;
+}
+
+#login-page-elements img {
+  height: 100px;
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+form button {
+  width: fit-content;
+  margin-bottom: 5em;
+}
+
 input {
-  width: 500px;
+  margin-bottom: 10px;
 }
 
 #logo {
@@ -123,28 +141,16 @@ input {
   align-items: center;
 }
 
-.hidden {
-  display: none;
+.error-message {
+  text-align: center;
+  width: 60%;
 }
 
-#login-pic {
-  height: 100px;
+.hidden {
+  display: none;
 }
 
 .back-button {
   width: 10%;
   height: 30px;
-}
-
-#real-login-button, #signup-button {
-  width: 10%;
-  height: 25px;
-}
-
-#login-page {
-  text-align: center;
-}
-
-#login-box {
-  margin-top: 200px;
 }

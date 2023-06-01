@@ -1,98 +1,98 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Final Project</title>
-  <link href="styles.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Sigmar&display=swap" rel="stylesheet">
-  <script src="index.js"></script>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Final Project</title>
+    <link href="styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sigmar&display=swap" rel="stylesheet">
+    <script src="index.js"></script>
+  </head>
 
-<body>
-  <section id="menu-page">
-    <section id='top-bar'>
+  <body>
+    <header>
       <img id="logo" src="images/plant-logo.png" alt="makeshift logo">
-      <input type="text" placeholder="Search for the perfect plant!">
-      <button id="search-button">Search</button>
-      <button id="cart-button">Cart</button>
-      <button id="login-button">Log in</button>
+      <nav>
+        <input type="text" placeholder="Search for the perfect plant!">
+        <button id="search-button">Search</button>
+        <button id="cart-button" class="hidden">Cart</button>
+        <button id="login-button">Log in</button>
+      </nav>
+    </header>
+    <section id="menu-page">
+      <section>
+        <h1>Welcome!</h1>
+      </section>
+      <h2>Most Succulent Deals</h2>
+      <section class="product-grid">
+        <article class="product-grid-item">
+          <img src='images/snake-plant.png' alt='snake plant'>
+          <section class="product-grid-info">
+            <p>Snake plant</p>
+            <p>$5</p>
+          </section>
+        </article>
+        <article class="product-grid-item">
+          <img src="images/pothos.png" alt="pothos plant">
+          <section class="product-grid-info">
+            <p>Pothos plant</p>
+            <p>$5</p>
+          </section>
+        </article>
+        <article class="product-grid-item">
+          <img src='images/zz-plant.png' alt='zz plant'>
+          <section class="product-grid-info">
+            <p>ZZ plant</p>
+            <p>$5</p>
+          </section>
+        </article>
+      </section>
+      <section class="center">
+        <button id="view-all">View All Products</button>
+      </section>
     </section>
-    <section>
-      <h1>Welcome!</h1>
+
+    <section id="main-view" class="hidden">
+      <button id="main-view-back-button" class="back-button">Back</button>
+      <button id="layout-button">Change layout</button>
+      <section id="main-view-products" class="product-grid"></section>
     </section>
-    <h2>Most Succulent Deals</h2>
-    <section class="product-grid">
-      <article class="product-grid-item">
-        <img src='images/snake-plant.png' alt='snake plant'>
-        <section class="product-grid-info">
-          <p>Snake plant</p>
-          <p>$5</p>
+
+    <section id="product-page" class="hidden">
+      <section>
+        <button id="product-back-button" class="back-button">Back</button>
+      </section>
+      <img src="images/snake-plant.png" alt="snake plant" class="product">
+      <section id="product-description">
+        <h2>Plant Name</h2>
+        <p>Plant Description</p>
+        <p>Plant Price</p>
+        <button id="add-to-cart-button">Add item to cart</button>
+      </section>
+    </section>
+
+    <section id="login-page" class="hidden">
+      <section>
+        <button id="login-back-button" class="back-button">Back</button>
+      </section>
+      <section id="login-page-elements">
+        <img src="images/login-picture.png" alt="default user image">
+        <form class="center">
+          <input type="text" id="username" name="username" placeholder="Username" required>
+          <input type="text" id="password" name="password" placeholder="Password" required>
+          <button>Log in</button>
+        </form>
+        <section class="center">
+          <p>Need to create an account?</p>
+          <button id="signup-button">Sign up</button>
         </section>
-      </article>
-      <article class="product-grid-item">
-        <img src="images/pothos.png" alt="pothos plant">
-        <section class="product-grid-info">
-          <p>Pothos plant</p>
-          <p>$5</p>
-        </section>
-      </article>
-      <article class="product-grid-item">
-        <img src='images/zz-plant.png' alt='zz plant'>
-        <section class="product-grid-info">
-          <p>ZZ plant</p>
-          <p>$5</p>
-        </section>
-      </article>
+      </section>
     </section>
-    <section class="center">
-      <button id="view-all">View All Products</button>
-    </section>
-  </section>
 
-  <section id="main-view" class="hidden">
-    <button id="main-view-back-button" class="back-button">Back</button>
-    <button id="layout-button">Change layout</button>
-    <section id="main-view-products" class="product-grid"></section>
-  </section>
+    <section id="error-page" class="hidden">
+      <p>Oh snap an error has occured! Please try again later.</p>
+    </section>
 
-  <section id="product-page" class="hidden">
-    <section>
-      <button id="product-back-button" class="back-button">Back</button>
-    </section>
-    <img src="images/snake-plant.png" alt="snake plant" class="product">
-    <section id="product-description">
-      <h2>Plant Name</h2>
-      <p>Plant Description</p>
-      <p>Plant Price</p>
-      <button id="add-to-cart-button">Add item to cart</button>
-    </section>
-  </section>
-  <section id="login-page" class="hidden">
-    <section>
-      <button id="login-back-button" class="back-button">Back</button>
-    </section>
-    <section id="login-box">
-      <p>
-        <img id="login-pic" src="images/login-picture.png" alt="default login picture">
-      </p>
-      <p>
-        <input type="text" placeholder="Login">
-      </p>
-      <p>
-        <input type="password" placeholder="Password">
-      </p>
-      <p>
-        <button id="real-login-button">Log in</button>
-        <button id="signup-button">Sign up</button>
-      </p>
-    </section>
-  </section>
-
-  <section id="error-page" class="hidden">
-    <p>Oh snap an error has occured! Please try again later.</p>
-  </section>
-
-</body>
+  </body>
 </html>

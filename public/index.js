@@ -8,21 +8,23 @@
    * function comment
    */
   function init() {
-    let loginButton = qs("#login-button");
-    let loginBackButton = qs("#login-back-button");
     let productGridButton = qsa(".product-grid-item");
-    let productBackButton = qs("#product-back-button");
-    loginButton.addEventListener("click", switchLoginView);
-    loginBackButton.addEventListener("click", switchLoginView);
+    let inputBar = id("search-term");
+    qs("#login-button").addEventListener("click", switchLoginView);
+    qs("#login-back-button").addEventListener("click", switchLoginView);
     for (let i = 0; i < productGridButton.length; i++) {
       productGridButton[i].addEventListener("click", switchToProduct);
     }
-    productBackButton.addEventListener("click", switchToMain);
+    qs("#product-back-button").addEventListener("click", switchToMain);
     id('view-all').addEventListener('click', requestAllProducts);
     id('main-view-back-button').addEventListener('click', goHome);
     id('layout-button').addEventListener('click', toggleLayout);
     id('login-button').addEventListener('click', promptLogin);
     id('signup-button').addEventListener('click', promptSignup);
+    id('logo').addEventListener("click", goHome);
+    qs("#search-button").disabled = true;
+    inputBar.value = "";
+    inputBar.addEventListener("input", checkInput);
 
     /**
      * make function for search
@@ -153,7 +155,7 @@
    * Takes the user back to the home page from the main view of all products page.
    */
   function goHome() {
-    id('main-view').classList.add('hidden');
+    hideAll();
     id('menu-page').classList.remove('hidden');
     id('main-view-products').innerHTML = '';
     id('main-view-products').classList.remove('product-list');
@@ -179,7 +181,7 @@
    * @param {JSON} allProducts - all of the products names, shortnames, and prices
    */
   function displayAllProducts(allProducts) {
-    id('menu-page').classList.add('hidden');
+    hideAll();
     id('main-view').classList.remove('hidden');
     for (let i = 0; i < allProducts.length; i++) {
       let product = gen('article');
@@ -215,9 +217,7 @@
    * send user to login page
    */
   function switchToProduct() {
-    id("menu-page").classList.add("hidden");
-    id("main-view").classList.add("hidden");
-    id("login-page").classList.add("hidden");
+    hideAll();
     id("product-page").classList.remove("hidden");
 
     fetch("/all/products/" + this.id)
@@ -231,7 +231,7 @@
    * sends user back to main page
    */
   function switchToMain() {
-    id("product-page").classList.add("hidden");
+    hideAll();
     id("main-view").classList.remove("hidden");
   }
 
@@ -299,6 +299,14 @@
       if (!pages[i].classList.contains('hidden')) {
         pages[i].classList.add('hidden');
       }
+    }
+  }
+
+  function checkInput() {
+    if (id("search-term").value.trim() !== "") {
+      qs("#search-button").disabled = false;
+    } else {
+      qs("#search-button").disabled = true;
     }
   }
 

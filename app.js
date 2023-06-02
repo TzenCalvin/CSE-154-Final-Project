@@ -27,8 +27,18 @@ const CLIENT_SIDE_ERROR_STATUS_CODE = 400;
 app.get('/all/products', async (req, res) => {
   try {
     let db = await getDBConnection();
-    let qry = 'SELECT name, shortname, price FROM products';
-    let result = await db.all(qry);
+    let search = req.query.search;
+    let qry;
+    let result;
+
+    if (search) {
+      qry = 'SELECT name, shortname, price FROM products WHERE Name LIKE ?';
+      result = await db.all(qry, '%' + search + '%');
+    } else {
+      qry = 'SELECT name, shortname, price FROM products';
+      result = await db.all(qry);
+    }
+
     res.type('json').send(result);
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
@@ -47,15 +57,15 @@ app.get("/all/products/:product", async (req, res) => {
 
     if (productInfo.length === 0) {
       res.type("text")
-        .status(400)
+        .status(CLIENT_SIDE_ERROR_STATUS_CODE)
         .send("Yikes. Product does not exist.");
     } else {
       res.json(productInfo);
     }
   } catch (err) {
     res.type("text")
-      .status(500)
-      .send("An error occurred on the server. Try again later.");
+      .status(SERVER_SIDE_ERROR_STATUS_CODE)
+      .send(SERVER_SIDE_ERROR_MSG);
   }
 });
 

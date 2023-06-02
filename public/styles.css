@@ -169,9 +169,14 @@ input {
 
 .flex-container {
   display: flex;
+  margin-top: 20px;
 }
 
 #product-img {
   height: 300px;
   width: 300px;
+}
+
+#product-details {
+  margin-left: 20px;
 }

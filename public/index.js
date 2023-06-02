@@ -14,7 +14,6 @@
     let productGridButton = qsa(".product-grid-item");
     let productBackButton = qs("#product-back-button");
     loginButton.addEventListener("click", switchLoginView);
-    mainViewBackButton.addEventListener("click", mainViewGoBack);
     loginBackButton.addEventListener("click", switchLoginView);
     for (let i = 0; i < productGridButton.length; i++) {
       productGridButton[i].addEventListener("click", switchToProduct);
@@ -157,6 +156,7 @@
       info.appendChild(price);
       product.appendChild(info);
       id('main-view-products').appendChild(product);
+      product.addEventListener("click", switchToProduct);
     }
   }
 
@@ -187,14 +187,6 @@
   function switchToMain() {
     id("product-page").classList.add("hidden");
     id("main-view").classList.remove("hidden");
-  }
-
-  function mainViewGoBack() {
-    id("main-page").classList.add("hidden");
-    id("main-view").classList.remove("hidden");
-    id("main-view-products").innerHTML = "";
-    id("main-view-products").classList.remove("product-list");
-    id("main-view-products").classList.add("product-grid");
   }
 
   function populateProduct(info) {

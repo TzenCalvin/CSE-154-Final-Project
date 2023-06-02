@@ -60,43 +60,6 @@ app.get("/all/products/:product", async (req, res) => {
 });
 
 
-// gets all of the products' names, shortnames, and prices
-app.get('/all/products', async (req, res) => {
-  try {
-    let db = await getDBConnection();
-    let qry = 'SELECT name, shortname, price FROM products';
-    let result = await db.all(qry);
-    res.type('json').send(result);
-  } catch (err) {
-    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
-    res.type('text').send(SERVER_SIDE_ERROR_MSG);
-  }
-});
-
-// Returns a JSON file of all the information about the given project
-app.get("/all/products/:product", async (req, res) => {
-  try {
-    let db = await getDBConnection();
-    let product = req.params.product;
-    const query = "SELECT * FROM Products WHERE shortname = ?"
-    let productInfo = await db.get(query, product);
-    await db.close();
-
-    if (productInfo.length === 0) {
-      res.type("text")
-        .status(400)
-        .send("Yikes. Product does not exist.");
-    } else {
-      res.json(productInfo);
-    }
-  } catch (err) {
-    res.type("text")
-      .status(500)
-      .send("An error occurred on the server. Try again later.");
-  }
-});
-
-
 /**
  * Establishes a database connection to the database and returns the database object.
  * Any errors that occur should be caught in the function that calls this one.

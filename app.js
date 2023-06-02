@@ -95,24 +95,31 @@ app.post('/user/login', async (req, res) => {
   }
 });
 
+// adds the given new user's information to the database
 app.post('/user/signup', async (req, res) => {
   try {
     if (req.body.email && req.body.username && req.body.password) {
-      let qry = 'SELECT username FROM users WHERE email = ? AND username = ? AND password = ?';
+      let qryUsername = 'SELECT username FROM users WHERE username = ?';
       let db = await getDBConnection();
-      let result = await db.all(qry, [req.body.username, req.body.password]);
+      let usernameResult = await db.get(qryUsername, [req.body.username]);
+      let qryEmail = 'SELECT email FROM users WHERE email = ?';
+      let emailResult = await db.get(qryEmail, [req.body.email]);
+      let qry = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
+      await db.run(qry, [req.body.email, req.body.username, req.body.password]);
       await db.close();
-      if (result.length === 0) {
+      if (usernameResult.length !== 0) {
         res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-        res.type('text').send('Uh oh! The given username and password do not exist. ' +
-          'Please make sure you\'ve entered your information in correctly, otherwise ' +
-          'please click the sign up button to create a new account.');
-      } else {
-        res.type('text').send('success');
+        res.type('text').send('Username already exists. Please choose a different username');
       }
+      if (emailResult.length !== 0) {
+        res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+        res.type('text').send('The given email is already associated with an account. ' +
+          'Enter a new email or enter the correct username and password for the previous email.');
+      }
+      res.type('text').send('success');
     } else {
       res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-      res.type('text').send('Missing username and/or password.');
+      res.type('text').send('Missing required email and/or username and/or password.');
     }
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);

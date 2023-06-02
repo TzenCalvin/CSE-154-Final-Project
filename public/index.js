@@ -51,10 +51,13 @@
   }
 
   /**
-   * comment
+   * Using the data inputed by the user either signs them up and sends them back to
+   * the homepage, or asks them to input the correct information or create a new
+   * account.
    */
   async function signupUser() {
     let data = new FormData();
+    data.append('email', id('email').value);
     data.append('username', id('signup-username').value);
     data.append('password', id('signup-password').value);
     try {
@@ -62,7 +65,7 @@
       await statusCheck(signupStatus);
       signupStatus = await signupStatus.text();
       if (signupStatus === 'success') {
-        window.localStorage.setItem('username', '' + id('login-username').value);
+        window.localStorage.setItem('username', '' + id('signup-username').value);
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
@@ -73,7 +76,7 @@
       errorMessage.classList.add('error-message');
       errorMessage.textContent = err;
       errorMessage.textContent = errorMessage.textContent.substring(7);
-      id('login-page-elements').insertBefore(errorMessage, qs('#login-page-elements section'));
+      id('login-page-elements').insertBefore(errorMessage, qs('#signup-page-elements section'));
     }
   }
 
@@ -93,7 +96,7 @@
   }
 
   /**
-   * Using the data inputed by the user either logs them in and send them back to
+   * Using the data inputed by the user either logs them in and sends them back to
    * the homepage, or asks them to input the correct information or create a new
    * account.
    */

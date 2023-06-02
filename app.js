@@ -59,20 +59,6 @@ app.get("/all/products/:product", async (req, res) => {
   }
 });
 
-/**
- * Establishes a database connection to the database and returns the database object.
- * Any errors that occur should be caught in the function that calls this one.
- * @returns {sqlite3.Database} - The database object for the connection.
- */
-async function getDBConnection() {
-  const db = await sqlite.open({
-    filename: 'fp.db',
-    driver: sqlite3.Database
-  });
-
-  return db;
-}
-
 // checks to see if the username and password are in the database
 app.post('/user/login', async (req, res) => {
   try {
@@ -123,6 +109,20 @@ app.post('/user/signup', async (req, res) => {
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
   }
 });
+
+/**
+ * Establishes a database connection to the database and returns the database object.
+ * Any errors that occur should be caught in the function that calls this one.
+ * @returns {sqlite3.Database} - The database object for the connection.
+ */
+async function getDBConnection() {
+  const db = await sqlite.open({
+    filename: 'fp.db',
+    driver: sqlite3.Database
+  });
+
+  return db;
+}
 
 app.use(express.static('public'));
 const PORT = process.env.PORT || 8000;

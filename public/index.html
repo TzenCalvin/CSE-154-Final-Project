@@ -53,23 +53,31 @@
       </section>
     </section>
 
-    <section id="main-view" class="hidden">
-      <button id="main-view-back-button" class="back-button">Back</button>
-      <button id="layout-button">Change layout</button>
-      <section id="main-view-products" class="product-grid"></section>
-    </section>
+      <section id="main-view" class="hidden">
+        <button id="main-view-back-button" class="back-button">Back</button>
+        <button id="layout-button">Change layout</button>
+        <section id="main-view-products" class="product-grid"></section>
+      </section>
 
     <section id="product-page" class="hidden">
       <section>
         <button id="product-back-button" class="back-button">Back</button>
       </section>
-      <img src="images/snake-plant.png" alt="snake plant" class="product">
-      <section id="product-description">
-        <h2>Plant Name</h2>
-        <p>Plant Description</p>
-        <p>Plant Price</p>
-        <button id="add-to-cart-button">Add item to cart</button>
-      </section>
+      <div class="flex-container">
+        <img src="pothos.png" alt="image" class="product" id="product-img">
+        <section id="product-details">
+          <h3 id="product-name"></h3>
+          <p id="product-description"></p>
+          <p id="product-price"></p>
+          <p id="product-size"></p>
+          <p id="product-height"></p>
+          <p id="product-color"></p>
+          <p id="product-flowers"></p>
+          <p id="product-manageability"></p>
+          <p id="product-stock"></p>
+        </section>
+      </div>
+      <button id="add-to-cart-button">Add item to cart</button>
     </section>
 
     <section id="login-page" class="hidden">
@@ -105,9 +113,23 @@
       </section>
     </section>
 
+    <section id="signup-page" class="hidden">
+      <section>
+        <button id="signup-back-button" class="back-button">Back</button>
+      </section>
+      <section id="signup-page-elements">
+        <img src="images/login-picture.png" alt="default user image" class="user-img">
+        <form class="center">
+          <input type="text" id="email" name="email" placeholder="Email" required>
+          <input type="text" id="signup-username" name="username" placeholder="Username" required>
+          <input type="text" id="signup-password" name="password" placeholder="Password" required>
+          <button>Sign up</button>
+        </form>
+      </section>
+    </section>
+
     <section id="error-page" class="hidden">
       <p>Oh snap an error has occured! Please try again later.</p>
     </section>
-
   </body>
 </html>

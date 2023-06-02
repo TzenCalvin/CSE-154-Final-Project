@@ -8,12 +8,16 @@
    * function comment
    */
   function init() {
-    id("login-back-button").addEventListener("click", switchLoginView);
-    let productButton = qsa(".product");
-    for (let i = 0; i < productButton.length; i++) {
-      productButton[i].addEventListener("click", switchProductView);
+    let loginButton = qs("#login-button");
+    let loginBackButton = qs("#login-back-button");
+    let productGridButton = qsa(".product-grid-item");
+    let productBackButton = qs("#product-back-button");
+    loginButton.addEventListener("click", switchLoginView);
+    loginBackButton.addEventListener("click", switchLoginView);
+    for (let i = 0; i < productGridButton.length; i++) {
+      productGridButton[i].addEventListener("click", switchToProduct);
     }
-    id("product-back-button").addEventListener("click", switchProductView);
+    productBackButton.addEventListener("click", switchToMain);
     id('view-all').addEventListener('click', requestAllProducts);
     id('main-view-back-button').addEventListener('click', goHome);
     id('layout-button').addEventListener('click', toggleLayout);
@@ -133,6 +137,7 @@
     for (let i = 0; i < products.length; i++) {
       products[i].classList.remove(currentView + '-item');
       products[i].classList.add(newView + '-item');
+      products[i].addEventListener("click", switchToProduct);
     }
     let productsInfo = qsa('#main-view-products section');
     for (let i = 0; i < productsInfo.length; i++) {
@@ -191,6 +196,7 @@
       info.appendChild(price);
       product.appendChild(info);
       id('main-view-products').appendChild(product);
+      product.addEventListener("click", switchToProduct);
     }
   }
 
@@ -205,9 +211,80 @@
   /**
    * send user to login page
    */
-  function switchProductView() {
-    id("menu-page").classList.toggle("hidden");
-    id("product-page").classList.toggle("hidden");
+  function switchToProduct() {
+    id("menu-page").classList.add("hidden");
+    id("main-view").classList.add("hidden");
+    id("login-page").classList.add("hidden");
+    id("product-page").classList.remove("hidden");
+
+    fetch("/all/products/" + this.id)
+      .then(statusCheck)
+      .then(res => res.json())
+      .then(populateProduct)
+      .catch(handleError);
+  }
+
+  /**
+   * sends user back to main page
+   */
+  function switchToMain() {
+    id("product-page").classList.add("hidden");
+    id("main-view").classList.remove("hidden");
+  }
+
+  /**
+   * populates the product info page with info about the product
+   * @param {JSON} info - response from the API
+   */
+  function populateProduct(info) {
+    let img = id("product-img");
+    let name = id("product-name");
+    let desc = id("product-description");
+    let price = id("product-price");
+    let size = id("product-size");
+    let color = id("product-color");
+
+    img.src = "images/" + info.shortname + ".png";
+    img.alt = info.shortname;
+    name.textContent = info.name;
+    desc.textContent = info.description;
+    price.textContent = "Price: $" + info.price;
+    size.textContent = "Pot size: " + info["pot-size"] + "in";
+    color.textContent = "Color: " + info.color;
+
+    differentDetails(info);
+  }
+
+  /**
+   * populates the details relating to plants if the given product is a plant and omits
+   * it if the product is a pot.
+   * @param {JSON} info - response from the API
+   */
+  function differentDetails(info) {
+    let height = id("product-height");
+    let flowers = id("product-flowers");
+    let manageability = id("product-manageability");
+    let stock = id("product-stock");
+
+    if (info["item-type"] === "plant") {
+      height.classList.remove("hidden");
+      flowers.classList.remove("hidden");
+      manageability.classList.remove("hidden");
+    } else {
+      height.classList.add("hidden");
+      flowers.classList.add("hidden");
+      manageability.classList.add("hidden");
+    }
+
+    height.textContent = "Starting height: " + info["plant-height"] + "in";
+    flowers.textContent = "Ability to flower: " + info.flowers;
+    manageability.textContent = "Manageability: " + info.manageability;
+
+    if (info.capacity) {
+      stock.textContent = "Limited supply: " + info.capacity + " plants remaining.";
+    } else {
+      stock.textContent = "No limit.";
+    }
   }
 
   /**

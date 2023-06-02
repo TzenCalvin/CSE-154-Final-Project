@@ -14,7 +14,7 @@
     <header>
       <img id="logo" src="images/plant-logo.png" alt="makeshift logo">
       <nav>
-        <input type="text" placeholder="Search for the perfect plant!">
+        <input type="text" placeholder="Search for the perfect plant">
         <button id="search-button">Search</button>
         <button id="cart-button" class="hidden">Cart</button>
         <button id="login-button">Log in</button>
@@ -77,16 +77,31 @@
         <button id="login-back-button" class="back-button">Back</button>
       </section>
       <section id="login-page-elements">
-        <img src="images/login-picture.png" alt="default user image">
+        <img src="images/login-picture.png" alt="default user image" class="user-img">
         <form class="center">
-          <input type="text" id="username" name="username" placeholder="Username" required>
-          <input type="text" id="password" name="password" placeholder="Password" required>
+          <input type="text" id="login-username" name="username" placeholder="Username" required>
+          <input type="text" id="login-password" name="password" placeholder="Password" required>
           <button>Log in</button>
         </form>
         <section class="center">
           <p>Need to create an account?</p>
           <button id="signup-button">Sign up</button>
         </section>
+      </section>
+    </section>
+
+    <section id="signup-page" class="hidden">
+      <section>
+        <button id="signup-back-button" class="back-button">Back</button>
+      </section>
+      <section id="signup-page-elements">
+        <img src="images/login-picture.png" alt="default user image" class="user-img">
+        <form class="center">
+          <input type="text" id="email" name="email" placeholder="Email" required>
+          <input type="text" id="signup-username" name="username" placeholder="Username" required>
+          <input type="text" id="signup-password" name="password" placeholder="Password" required>
+          <button>Sign up</button>
+        </form>
       </section>
     </section>
 

@@ -77,6 +77,31 @@ app.post('/user/login', async (req, res) => {
   }
 });
 
+app.post('/user/signup', async (req, res) => {
+  try {
+    if (req.body.email && req.body.username && req.body.password) {
+      let qry = 'SELECT username FROM users WHERE email = ? AND username = ? AND password = ?';
+      let db = await getDBConnection();
+      let result = await db.all(qry, [req.body.username, req.body.password]);
+      await db.close();
+      if (result.length === 0) {
+        res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+        res.type('text').send('Uh oh! The given username and password do not exist. ' +
+          'Please make sure you\'ve entered your information in correctly, otherwise ' +
+          'please click the sign up button to create a new account.');
+      } else {
+        res.type('text').send('success');
+      }
+    } else {
+      res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+      res.type('text').send('Missing username and/or password.');
+    }
+  } catch (err) {
+    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+  }
+});
+
 app.use(express.static('public'));
 const PORT = process.env.PORT || 8000;
 app.listen(PORT);

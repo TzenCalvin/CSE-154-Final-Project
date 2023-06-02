@@ -18,6 +18,7 @@
     id('main-view-back-button').addEventListener('click', goHome);
     id('layout-button').addEventListener('click', toggleLayout);
     id('login-button').addEventListener('click', promptLogin);
+    id('signup-button').addEventListener('click', promptSignup);
 
     /**
      * make function for search
@@ -30,13 +31,53 @@
   }
 
   /**
+   * Sends the user to the signup page and takes in user input to create the user
+   * a new account.
+   */
+  function promptSignup() {
+    hideAll();
+    id('signup-page').classList.remove('hidden');
+    qs('#signup-page form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      signupUser();
+    });
+  }
+
+  /**
+   * comment
+   */
+  async function signupUser() {
+    let data = new FormData();
+    data.append('username', id('signup-username').value);
+    data.append('password', id('signup-password').value);
+    try {
+      let signupStatus = await fetch('/user/signup', {method: 'POST', body: data});
+      await statusCheck(signupStatus);
+      signupStatus = await signupStatus.text();
+      if (signupStatus === 'success') {
+        window.localStorage.setItem('username', '' + id('login-username').value);
+        hideAll();
+        id('menu-page').classList.remove('hidden');
+        id('login-button').classList.add('hidden');
+        id('cart-button').classList.remove('hidden');
+      }
+    } catch (err) {
+      let errorMessage = gen('p');
+      errorMessage.classList.add('error-message');
+      errorMessage.textContent = err;
+      errorMessage.textContent = errorMessage.textContent.substring(7);
+      id('login-page-elements').insertBefore(errorMessage, qs('#login-page-elements section'));
+    }
+  }
+
+  /**
    * Sends the user to the login page and takes in user input to log them in.
    */
   function promptLogin() {
     hideAll();
     id("login-page").classList.remove("hidden");
     if (window.localStorage.getItem('username')) {
-      id('username').value = window.localStorage.getItem('username');
+      id('login-username').value = window.localStorage.getItem('username');
     }
     qs('#login-page form').addEventListener('submit', (event) => {
       event.preventDefault();
@@ -51,14 +92,14 @@
    */
   async function loginUser() {
     let data = new FormData();
-    data.append('username', id('username').value);
-    data.append('password', id('password').value);
+    data.append('username', id('login-username').value);
+    data.append('password', id('login-password').value);
     try {
       let loginStatus = await fetch('/user/login', {method: 'POST', body: data});
       await statusCheck(loginStatus);
       loginStatus = await loginStatus.text();
       if (loginStatus === 'success') {
-        window.localStorage.setItem('username', '' + id('username').value);
+        window.localStorage.setItem('username', '' + id('login-username').value);
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
@@ -134,6 +175,7 @@
     id('main-view').classList.remove('hidden');
     for (let i = 0; i < allProducts.length; i++) {
       let product = gen('article');
+      product.id = allProducts[i].shortname;
       product.classList.add('product-grid-item');
       let image = gen('img');
       image.src = 'images/' + allProducts[i].shortname + '.png';
@@ -185,6 +227,7 @@
    */
   function handleError() {
     hideAll();
+    qs('header').classList.add('hidden');
     id('error-page').classList.remove('hidden');
   }
 

@@ -23,6 +23,7 @@
     id('signup-button').addEventListener('click', promptSignup);
     id('logo').addEventListener("click", goHome);
     qs("#search-button").disabled = true;
+    id("search-button").addEventListener("click", searchProducts);
     inputBar.value = "";
     inputBar.addEventListener("input", checkInput);
 
@@ -180,25 +181,32 @@
   function displayAllProducts(allProducts) {
     hideAll();
     id('main-view').classList.remove('hidden');
-    for (let i = 0; i < allProducts.length; i++) {
-      let product = gen('article');
-      product.id = allProducts[i].shortname;
-      product.classList.add('product-grid-item');
-      let image = gen('img');
-      image.src = 'images/' + allProducts[i].shortname + '.png';
-      image.alt = allProducts[i].name;
-      product.appendChild(image);
-      let info = gen('section');
-      info.classList.add('product-grid-info');
-      let name = gen('p');
-      name.textContent = allProducts[i].name;
-      info.appendChild(name);
-      let price = gen('p');
-      price.textContent = '$' + allProducts[i].price;
-      info.appendChild(price);
-      product.appendChild(info);
-      id('main-view-products').appendChild(product);
-      product.addEventListener("click", switchToProduct);
+    id('main-view-products').innerHTML = "";
+    if (JSON.stringify(allProducts) === '[]'){
+      let noItems = gen('p');
+      noItems.textContent = "We got nothing for ya :(";
+      id('main-view-products').appendChild(noItems);
+    } else {
+      for (let i = 0; i < allProducts.length; i++) {
+        let product = gen('article');
+        product.id = allProducts[i].shortname;
+        product.classList.add('product-grid-item');
+        let image = gen('img');
+        image.src = 'images/' + allProducts[i].shortname + '.png';
+        image.alt = allProducts[i].name;
+        product.appendChild(image);
+        let info = gen('section');
+        info.classList.add('product-grid-info');
+        let name = gen('p');
+        name.textContent = allProducts[i].name;
+        info.appendChild(name);
+        let price = gen('p');
+        price.textContent = '$' + allProducts[i].price;
+        info.appendChild(price);
+        product.appendChild(info);
+        id('main-view-products').appendChild(product);
+        product.addEventListener("click", switchToProduct);
+      }
     }
   }
 
@@ -299,12 +307,30 @@
     }
   }
 
+  /**
+   * Checks to see if there's anything tangible in the search box. If so, activate the
+   * submit button, and disable if not.
+   */
   function checkInput() {
     if (id("search-term").value.trim() !== "") {
       qs("#search-button").disabled = false;
     } else {
       qs("#search-button").disabled = true;
     }
+  }
+
+  /**
+   * Finds all the products where the name contains the query that the user submitted.
+   */
+  function searchProducts() {
+    fetch("/all/products/?search=" + id("search-term").value)
+      .then(statusCheck)
+      .then(res => res.json())
+      .then(function(res) {
+        displayAllProducts(res);
+        id("search-term").value = "";
+      })
+      .catch(handleError);
   }
 
   /**

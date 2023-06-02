@@ -10,100 +10,100 @@
     <script src="index.js"></script>
   </head>
 
-<body>
-  <header>
-    <img id="logo" src="images/plant-logo.png" alt="makeshift logo">
-    <nav>
-      <input type="text" placeholder="Search for the perfect plant">
-      <button id="search-button">Search</button>
-      <button id="cart-button" class="hidden">Cart</button>
-      <button id="login-button">Log in</button>
-    </nav>
-  </header>
-  <section id="menu-page">
-    <section>
-      <h1>Welcome!</h1>
-    </section>
-    <h2>Most Succulent Deals</h2>
-    <section class="product-grid">
-      <article class="product-grid-item">
-        <img src='images/snake-plant.png' alt='snake plant'>
-        <section class="product-grid-info">
-          <p>Snake plant</p>
-          <p>$5</p>
-        </section>
-      </article>
-      <article class="product-grid-item">
-        <img src="images/pothos.png" alt="pothos plant">
-        <section class="product-grid-info">
-          <p>Pothos plant</p>
-          <p>$5</p>
-        </section>
-      </article>
-      <article class="product-grid-item">
-        <img src='images/zz-plant.png' alt='zz plant'>
-        <section class="product-grid-info">
-          <p>ZZ plant</p>
-          <p>$5</p>
-        </section>
-      </article>
-    </section>
-    <section class="center">
-      <button id="view-all">View All Products</button>
-    </section>
-  </section>
-
-    <section id="main-view" class="hidden">
-      <button id="main-view-back-button" class="back-button">Back</button>
-      <button id="layout-button">Change layout</button>
-      <section id="main-view-products" class="product-grid"></section>
-    </section>
-
-  <section id="product-page" class="hidden">
-    <section>
-      <button id="product-back-button" class="back-button">Back</button>
-    </section>
-    <div class="flex-container">
-      <img src="" alt="" class="product" id="product-img">
-      <section id="product-details">
-        <h3 id="product-name"></h3>
-        <p id="product-description"></p>
-        <p id="product-price"></p>
-        <p id="product-size"></p>
-        <p id="product-height"></p>
-        <p id="product-color"></p>
-        <p id="product-flowers"></p>
-        <p id="product-manageability"></p>
-        <p id="product-stock"></p>
+  <body>
+    <header>
+      <img id="logo" src="images/plant-logo.png" alt="makeshift logo">
+      <nav>
+        <input type="text" placeholder="Search for the perfect plant">
+        <button id="search-button">Search</button>
+        <button id="cart-button" class="hidden">Cart</button>
+        <button id="login-button">Log in</button>
+      </nav>
+    </header>
+    <section id="menu-page">
+      <section>
+        <h1>Welcome!</h1>
       </section>
-    </div>
-    <button id="add-to-cart-button">Add item to cart</button>
-  </section>
-
-
-  <section id="login-page" class="hidden">
-    <section>
-      <button id="login-back-button" class="back-button">Back</button>
+      <h2>Most Succulent Deals</h2>
+      <section class="product-grid">
+        <article class="product-grid-item">
+          <img src='images/snake-plant.png' alt='snake plant'>
+          <section class="product-grid-info">
+            <p>Snake plant</p>
+            <p>$5</p>
+          </section>
+        </article>
+        <article class="product-grid-item">
+          <img src="images/pothos.png" alt="pothos plant">
+          <section class="product-grid-info">
+            <p>Pothos plant</p>
+            <p>$5</p>
+          </section>
+        </article>
+        <article class="product-grid-item">
+          <img src='images/zz-plant.png' alt='zz plant'>
+          <section class="product-grid-info">
+            <p>ZZ plant</p>
+            <p>$5</p>
+          </section>
+        </article>
+      </section>
+      <section class="center">
+        <button id="view-all">View All Products</button>
+      </section>
     </section>
-    <section id="login-box">
-      <p>
-        <img id="login-pic" src="images/login-picture.png" alt="default login picture">
-      </p>
-      <p>
-        <input type="text" placeholder="Login">
-      </p>
-      <p>
-        <input type="password" placeholder="Password">
-      </p>
-      <p>
-        <button id="real-login-button">Log in</button>
-        <button id="signup-button">Sign up</button>
-      </p>
+
+      <section id="main-view" class="hidden">
+        <button id="main-view-back-button" class="back-button">Back</button>
+        <button id="layout-button">Change layout</button>
+        <section id="main-view-products" class="product-grid"></section>
+      </section>
+
+    <section id="product-page" class="hidden">
+      <section>
+        <button id="product-back-button" class="back-button">Back</button>
+      </section>
+      <div class="flex-container">
+        <img src="pothos.png" alt="image" class="product" id="product-img">
+        <section id="product-details">
+          <h3 id="product-name"></h3>
+          <p id="product-description"></p>
+          <p id="product-price"></p>
+          <p id="product-size"></p>
+          <p id="product-height"></p>
+          <p id="product-color"></p>
+          <p id="product-flowers"></p>
+          <p id="product-manageability"></p>
+          <p id="product-stock"></p>
+        </section>
+      </div>
+      <button id="add-to-cart-button">Add item to cart</button>
+    </section>
+
+    <section id="login-page" class="hidden">
+      <section>
+        <button id="login-back-button" class="back-button">Back</button>
+      </section>
+
+      <section id="login-box">
+        <p>
+          <img id="login-pic" src="images/login-picture.png" alt="default login picture">
+        </p>
+        <p>
+          <input type="text" placeholder="Login">
+        </p>
+        <p>
+          <input type="password" placeholder="Password">
+        </p>
+        <p>
+          <button id="real-login-button">Log in</button>
+          <button id="signup-button">Sign up</button>
+        </p>
+      </section>
     </section>
 
     <section id="error-page" class="hidden">
       <p>Oh snap an error has occured! Please try again later.</p>
     </section>
-
   </body>
 </html>

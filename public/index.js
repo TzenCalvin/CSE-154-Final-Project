@@ -10,7 +10,6 @@
   function init() {
     let loginButton = qs("#login-button");
     let loginBackButton = qs("#login-back-button");
-    let mainViewBackButton = qs("#main-view-back-button");
     let productGridButton = qsa(".product-grid-item");
     let productBackButton = qs("#product-back-button");
     loginButton.addEventListener("click", switchLoginView);
@@ -163,7 +162,7 @@
   /**
    * send user to login page
    */
-   function switchLoginView() {
+  function switchLoginView() {
     id("menu-page").classList.toggle("hidden");
     id("login-page").classList.toggle("hidden");
   }
@@ -178,17 +177,24 @@
     id("product-page").classList.remove("hidden");
 
     fetch("/all/products/" + this.id)
-    .then(statusCheck)
-    .then(res => res.json())
-    .then(populateProduct)
-    .catch(handleError);
+      .then(statusCheck)
+      .then(res => res.json())
+      .then(populateProduct)
+      .catch(handleError);
   }
 
+  /**
+   * sends user back to main page
+   */
   function switchToMain() {
     id("product-page").classList.add("hidden");
     id("main-view").classList.remove("hidden");
   }
 
+  /**
+   * populates the product info page with info about the product
+   * @param {JSON} info - response from the API
+   */
   function populateProduct(info) {
     let img = id("product-img");
     let name = id("product-name");
@@ -208,6 +214,11 @@
     differentDetails(info);
   }
 
+  /**
+   * populates the details relating to plants if the given product is a plant and omits
+   * it if the product is a pot.
+   * @param {JSON} info - response from the API
+   */
   function differentDetails(info) {
     let height = id("product-height");
     let flowers = id("product-flowers");
@@ -229,12 +240,11 @@
     manageability.textContent = "Manageability: " + info.manageability;
 
     if (info.capacity) {
-      stock.textContent = "Limited supply: " + info.capacity + " plants remaining."
+      stock.textContent = "Limited supply: " + info.capacity + " plants remaining.";
     } else {
-      stock.textContent = "No limit."
+      stock.textContent = "No limit.";
     }
   }
-
 
   /**
    * Adds the class 'hidden' to all of the pages on the website.

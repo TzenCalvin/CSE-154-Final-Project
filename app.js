@@ -41,7 +41,7 @@ app.get("/all/products/:product", async (req, res) => {
   try {
     let db = await getDBConnection();
     let product = req.params.product;
-    const query = "SELECT * FROM Products WHERE shortname = ?"
+    const query = "SELECT * FROM Products WHERE shortname = ?";
     let productInfo = await db.get(query, product);
     await db.close();
 
@@ -59,7 +59,6 @@ app.get("/all/products/:product", async (req, res) => {
   }
 });
 
-
 /**
  * Establishes a database connection to the database and returns the database object.
  * Any errors that occur should be caught in the function that calls this one.
@@ -73,7 +72,6 @@ async function getDBConnection() {
 
   return db;
 }
-
 
 // checks to see if the username and password are in the database
 app.post('/user/login', async (req, res) => {

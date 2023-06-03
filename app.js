@@ -22,6 +22,7 @@ app.use(express.json());
 const SERVER_SIDE_ERROR_MSG = 'Oh no! An error occurred on the server. Try again later.';
 const SERVER_SIDE_ERROR_STATUS_CODE = 500;
 const CLIENT_SIDE_ERROR_STATUS_CODE = 400;
+let loggedIn = false;
 
 // gets all of the products' names, shortnames, and prices
 app.get('/all/products', async (req, res) => {
@@ -69,8 +70,6 @@ app.get("/all/products/:product", async (req, res) => {
   }
 });
 
-app.get
-
 // checks to see if the username and password are in the database
 app.post('/user/login', async (req, res) => {
   try {
@@ -85,6 +84,7 @@ app.post('/user/login', async (req, res) => {
           'Please make sure you\'ve entered your information in correctly, otherwise ' +
           'please click the sign up button to create a new account.');
       } else {
+        loggedIn = true;
         res.type('text').send('success');
       }
     } else {
@@ -115,6 +115,7 @@ app.post('/user/signup', async (req, res) => {
         let qry = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
         await db.run(qry, [req.body.email, req.body.username, req.body.password]);
         await db.close();
+        loggedIn = true;
         res.type('text').send('success');
       }
     } else {

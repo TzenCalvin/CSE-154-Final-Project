@@ -26,6 +26,7 @@
     id("search-button").addEventListener("click", searchProducts);
     inputBar.value = "";
     inputBar.addEventListener("input", checkInput);
+    checkIfLoggedIn();
 
     /**
      * make function for search
@@ -35,6 +36,17 @@
      * make funtion for adding to cart
      * id("add-to-cart-button").addEventListener("click", doSomething);
      */
+  }
+
+  /**
+   * Checks to see if the user is logged in upon a page load
+   */
+  function checkIfLoggedIn() {
+    if (sessionStorage.getItem('logged-in')) {
+      id('login-button').classList.add('hidden');
+      id('cart-button').classList.remove('hidden');
+      qs('h1').textContent = 'Welcome ' + localStorage.getItem('username') + '!';
+    }
   }
 
   /**
@@ -67,6 +79,7 @@
       signupStatus = await signupStatus.text();
       if (signupStatus === 'success') {
         window.localStorage.setItem('username', '' + id('signup-username').value);
+        window.sessionStorage.setItem('logged-in', true);
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
@@ -111,6 +124,7 @@
       loginStatus = await loginStatus.text();
       if (loginStatus === 'success') {
         window.localStorage.setItem('username', '' + id('login-username').value);
+        window.sessionStorage.setItem('logged-in', true);
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');

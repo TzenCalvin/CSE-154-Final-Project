@@ -69,6 +69,8 @@ app.get("/all/products/:product", async (req, res) => {
   }
 });
 
+app.get
+
 // checks to see if the username and password are in the database
 app.post('/user/login', async (req, res) => {
   try {

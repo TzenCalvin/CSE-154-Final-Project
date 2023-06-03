@@ -181,3 +181,20 @@ input {
 #product-details {
   margin-left: 20px;
 }
+
+#search-term {
+  width: 400px;
+}
+
+#adv-filters {
+  float: right;
+}
+
+.adv-filter-option {
+  margin-bottom: 30px;
+  margin-right: 50px;
+}
+
+.slider {
+  height: 5px;
+}

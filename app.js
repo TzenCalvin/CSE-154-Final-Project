@@ -22,6 +22,7 @@ app.use(express.json());
 const SERVER_SIDE_ERROR_MSG = 'Oh no! An error occurred on the server. Try again later.';
 const SERVER_SIDE_ERROR_STATUS_CODE = 500;
 const CLIENT_SIDE_ERROR_STATUS_CODE = 400;
+let loggedIn = false;
 
 // gets all of the products' names, shortnames, and prices
 app.get('/all/products', async (req, res) => {
@@ -32,8 +33,9 @@ app.get('/all/products', async (req, res) => {
     let result;
 
     if (search) {
-      qry = 'SELECT name, shortname, price FROM products WHERE Name LIKE ?';
-      result = await db.all(qry, '%' + search + '%');
+      qry = 'SELECT DISTINCT name, shortname, price FROM products WHERE (name LIKE ? OR' +
+      ' description LIKE ? OR color LIKE ?) ORDER BY id';
+      result = await db.all(qry, ['%' + search + '%', '%' + search + '%', '%' + search + '%']);
     } else {
       qry = 'SELECT name, shortname, price FROM products';
       result = await db.all(qry);
@@ -83,6 +85,7 @@ app.post('/user/login', async (req, res) => {
           'Please make sure you\'ve entered your information in correctly, otherwise ' +
           'please click the sign up button to create a new account.');
       } else {
+        loggedIn = true;
         res.type('text').send('success');
       }
     } else {
@@ -113,6 +116,7 @@ app.post('/user/signup', async (req, res) => {
         let qry = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
         await db.run(qry, [req.body.email, req.body.username, req.body.password]);
         await db.close();
+        loggedIn = true;
         res.type('text').send('success');
       }
     } else {

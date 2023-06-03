@@ -24,8 +24,11 @@
     id('logo').addEventListener("click", goHome);
     qs("#search-button").disabled = true;
     id("search-button").addEventListener("click", searchProducts);
+    id("toggle-filter").checked = false;
+    id("toggle-filter").addEventListener('change', showAdvanced);
     inputBar.value = "";
     inputBar.addEventListener("input", checkInput);
+    checkIfLoggedIn();
 
     /**
      * make function for search
@@ -35,6 +38,17 @@
      * make funtion for adding to cart
      * id("add-to-cart-button").addEventListener("click", doSomething);
      */
+  }
+
+  /**
+   * Checks to see if the user is logged in upon a page load
+   */
+  function checkIfLoggedIn() {
+    if (sessionStorage.getItem('logged-in')) {
+      id('login-button').classList.add('hidden');
+      id('cart-button').classList.remove('hidden');
+      qs('h1').textContent = 'Welcome ' + localStorage.getItem('username') + '!';
+    }
   }
 
   /**
@@ -67,6 +81,7 @@
       signupStatus = await signupStatus.text();
       if (signupStatus === 'success') {
         window.localStorage.setItem('username', '' + id('signup-username').value);
+        window.sessionStorage.setItem('logged-in', true);
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
@@ -111,6 +126,7 @@
       loginStatus = await loginStatus.text();
       if (loginStatus === 'success') {
         window.localStorage.setItem('username', '' + id('login-username').value);
+        window.sessionStorage.setItem('logged-in', true);
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
@@ -171,7 +187,7 @@
       let allProducts = await fetch('/all/products');
       await statusCheck(allProducts);
       allProducts = await allProducts.json();
-      displayAllProducts(allProducts);
+      displayProducts(allProducts);
     } catch (err) {
       handleError();
     }
@@ -181,7 +197,7 @@
    * Display all of the products' images, names, and prices from the API.
    * @param {JSON} allProducts - all of the products names, shortnames, and prices
    */
-  function displayAllProducts(allProducts) {
+  function displayProducts(allProducts) {
     hideAll();
     id('main-view').classList.remove('hidden');
     id('main-view-products').innerHTML = "";
@@ -307,6 +323,21 @@
   }
 
   /**
+   * displays the advanced filters for the user to use to refine their search.
+   */
+  function showAdvanced() {
+    id("adv-filters").classList.toggle("hidden");
+    id("max-price").value = 5;
+    id("max-pot-size").value = 3;
+    id("max-price").addEventListener("mouseup", function() {
+      id("price-output").textContent = "$" + id("max-price").value;
+    })
+    id("max-pot-size").addEventListener("mouseup", function() {
+      id("pot-output").textContent = id("max-pot-size").value + "in";
+    })
+  }
+
+  /**
    * Adds the class 'hidden' to all of the pages on the website.
    */
   function hideAll() {
@@ -337,10 +368,7 @@
     fetch("/all/products/?search=" + id("search-term").value)
       .then(statusCheck)
       .then(res => res.json())
-      .then(function(res) {
-        displayAllProducts(res);
-        id("search-term").value = "";
-      })
+      .then(displayProducts)
       .catch(handleError);
   }
 

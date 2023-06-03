@@ -55,6 +55,30 @@
     <section id="main-view" class="hidden">
       <button id="main-view-back-button" class="back-button">Back</button>
       <button id="layout-button">Change layout</button>
+      <label>
+        <input type="checkbox" id="toggle-filter" name="adv" value="filters"> Advanced filters
+      </label>
+      <section id="adv-filters" class="hidden">
+        <section class="adv-filter-option">
+          <label for="item-type">Item type:</label>
+          <select id="item-type">
+            <option value="plant">plants</option>
+            <option value="pot">pots</option>
+          </select>
+        </section>
+
+        <section class="adv-filter-option">
+          <label for="max-price">Max price:</label>
+          <input type="range" id="max-price" min="0" max="10" value="5" class="slider">
+          <output id="price-output">$5</output>
+        </section>
+
+        <section class="adv-filter-option">
+          <label for="max-pot-size">Max pot size:</label>
+          <input type="range" id="max-pot-size" min="0" max="6" value="3" class="slider">
+          <output id="pot-output">3in</output>
+        </section>
+      </section>
       <section id="main-view-products" class="product-grid"></section>
     </section>
 

@@ -54,6 +54,7 @@ input {
 }
 
 #view-all {
+  margin-top: 2em;
   margin-bottom: 4em;
   font-size: 20px;
 }
@@ -63,7 +64,7 @@ input {
   text-align: center;
 }
 
-#layout-button {
+#layout-button, #signup-button {
   height: 30px;
   width: fit-content;
 }
@@ -154,7 +155,7 @@ input {
   height: 30px;
 }
 
-#real-login-button, #signup-button {
+#real-login-button {
   width: 10%;
   height: 25px;
 }

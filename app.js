@@ -71,6 +71,15 @@ app.get("/all/products/:product", async (req, res) => {
   }
 });
 
+app.get('/transaction/status', async (req, res) => {
+  try {
+
+  } catch (err) {
+    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+  }
+});
+
 // checks to see if the username and password are in the database
 app.post('/user/login', async (req, res) => {
   try {

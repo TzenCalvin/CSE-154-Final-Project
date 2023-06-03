@@ -185,10 +185,8 @@
     hideAll();
     id('main-view').classList.remove('hidden');
     id('main-view-products').innerHTML = "";
-    if (JSON.stringify(allProducts) === '[]'){
-      let noItems = gen('p');
-      noItems.textContent = "We got nothing for ya :(";
-      id('main-view-products').appendChild(noItems);
+    if (JSON.stringify(allProducts) === '[]') {
+      noItemsNotification();
     } else {
       for (let i = 0; i < allProducts.length; i++) {
         let product = gen('article');
@@ -211,6 +209,16 @@
         product.addEventListener("click", switchToProduct);
       }
     }
+  }
+
+  /**
+   * Creates a message on the webpage to inform the user that there are no items
+   * available.
+   */
+  function noItemsNotification() {
+    let noItems = gen('p');
+    noItems.textContent = "We got nothing for ya :(";
+    id('main-view-products').appendChild(noItems);
   }
 
   /**

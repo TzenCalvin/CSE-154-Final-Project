@@ -99,24 +99,22 @@ app.post('/user/login', async (req, res) => {
 app.post('/user/signup', async (req, res) => {
   try {
     if (req.body.email && req.body.username && req.body.password) {
-      let qryUsername = 'SELECT username FROM users WHERE username = ?';
       let db = await getDBConnection();
-      let usernameResult = await db.get(qryUsername, [req.body.username]);
-      let qryEmail = 'SELECT email FROM users WHERE email = ?';
-      let emailResult = await db.get(qryEmail, [req.body.email]);
-      let qry = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
-      await db.run(qry, [req.body.email, req.body.username, req.body.password]);
-      await db.close();
-      if (usernameResult.length !== 0) {
+      if (await uniqueUsername(req.body.username, db) !== undefined) {
+        await db.close();
         res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-        res.type('text').send('Username already exists. Please choose a different username');
-      }
-      if (emailResult.length !== 0) {
+        res.type('text').send('Username already exists. Please choose a different username.');
+      } else if (await uniqueEmail(req.body.email, db) !== undefined) {
+        await db.close();
         res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
         res.type('text').send('The given email is already associated with an account. ' +
           'Enter a new email or enter the correct username and password for the previous email.');
+      } else {
+        let qry = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
+        await db.run(qry, [req.body.email, req.body.username, req.body.password]);
+        await db.close();
+        res.type('text').send('success');
       }
-      res.type('text').send('success');
     } else {
       res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
       res.type('text').send('Missing required email and/or username and/or password.');
@@ -126,6 +124,32 @@ app.post('/user/signup', async (req, res) => {
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
   }
 });
+
+/**
+ * Checks that the given username is not already in the database table
+ * @param {string} username - inputed by the user
+ * @param {sqlite.Database} db - connection to the database table
+ * @returns {JSON} - returns a JSON object indicating the username is already in
+ * the database table, otherwise returns undefined indicating the username is unique
+ */
+async function uniqueUsername(username, db) {
+  let qryUsername = 'SELECT username FROM users WHERE username = ?';
+  let usernameResult = await db.get(qryUsername, [username]);
+  return usernameResult;
+}
+
+/**
+ * Checks that the given email is not already in the database table
+ * @param {string} email - inputed by the user
+ * @param {sqlite.Database} db - connection to the database table
+ * @returns {JSON} - returns a JSON object indicating the email is already in
+ * the database table, otherwise returns undefined indicating the email is unique
+ */
+async function uniqueEmail(email, db) {
+  let qryEmail = 'SELECT email FROM users WHERE email = ?';
+  let emailResult = await db.get(qryEmail, [email]);
+  return emailResult;
+}
 
 /**
  * Establishes a database connection to the database and returns the database object.

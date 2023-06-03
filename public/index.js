@@ -46,6 +46,7 @@
     id('signup-page').classList.remove('hidden');
     qs('#signup-page form').addEventListener('submit', (event) => {
       event.preventDefault();
+      id('signup-error').textContent = '';
       signupUser();
     });
   }
@@ -70,13 +71,12 @@
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
         id('cart-button').classList.remove('hidden');
+        qs('h1').textContent = 'Welcome ' + id('signup-username').value + '!';
       }
     } catch (err) {
-      let errorMessage = gen('p');
-      errorMessage.classList.add('error-message');
-      errorMessage.textContent = err;
-      errorMessage.textContent = errorMessage.textContent.substring(7);
-      id('login-page-elements').insertBefore(errorMessage, qs('#signup-page-elements section'));
+      let errorMessage = err + '';
+      errorMessage = errorMessage.substring(7);
+      id('signup-error').textContent = errorMessage;
     }
   }
 
@@ -91,6 +91,7 @@
     }
     qs('#login-page form').addEventListener('submit', (event) => {
       event.preventDefault();
+      id('login-error').textContent = '';
       loginUser();
     });
   }
@@ -114,13 +115,12 @@
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
         id('cart-button').classList.remove('hidden');
+        qs('h1').textContent = 'Welcome ' + id('login-username').value + '!';
       }
     } catch (err) {
-      let errorMessage = gen('p');
-      errorMessage.classList.add('error-message');
-      errorMessage.textContent = err;
-      errorMessage.textContent = errorMessage.textContent.substring(7);
-      id('login-page-elements').insertBefore(errorMessage, qs('#login-page-elements section'));
+      let errorMessage = err + '';
+      errorMessage = errorMessage.substring(7);
+      id('login-error').textContent = errorMessage;
     }
   }
 

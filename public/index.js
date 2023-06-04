@@ -46,6 +46,7 @@
   function checkIfLoggedIn() {
     if (sessionStorage.getItem('logged-in')) {
       id('login-button').classList.add('hidden');
+      id('logout-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');
       qs('h1').textContent = 'Welcome ' + localStorage.getItem('username') + '!';
     }
@@ -130,6 +131,7 @@
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
+        id('logout-button').classList.remove('hidden');
         id('cart-button').classList.remove('hidden');
         qs('h1').textContent = 'Welcome ' + id('login-username').value + '!';
       }
@@ -251,8 +253,13 @@
   function switchToProduct() {
     hideAll();
     id("product-page").classList.remove("hidden");
+    let product = this.id;
+    if (!product) {
+      console.log(this.getElementsByTagName('img')[0].alt);
+      product = this.getElementsByTagName('img')[0].alt;
+    }
 
-    fetch("/products/" + this.id)
+    fetch("/products/" + product)
       .then(statusCheck)
       .then(res => res.json())
       .then(populateProduct)
@@ -265,6 +272,9 @@
   function switchToMain() {
     hideAll();
     id("main-view").classList.remove("hidden");
+    if (id("main-view-products").innerHTML === "") {
+      requestAllProducts();
+    }
   }
 
   /**

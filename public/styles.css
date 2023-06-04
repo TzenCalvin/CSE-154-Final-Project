@@ -44,12 +44,14 @@ input {
   margin-right: 5px;
 }
 
-#login-button {
+#login-button,
+#logout-button {
   margin-right: 5px;
 }
 
 #cart-button,
-#login-button {
+#login-button,
+#logout-button {
   float: right;
 }
 
@@ -158,10 +160,6 @@ input {
 #real-login-button {
   width: 10%;
   height: 25px;
-}
-
-#login-page {
-  text-align: center;
 }
 
 #login-box {

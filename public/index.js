@@ -46,6 +46,7 @@
   function checkIfLoggedIn() {
     if (sessionStorage.getItem('logged-in')) {
       id('login-button').classList.add('hidden');
+      id('logout-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');
       qs('h1').textContent = 'Welcome ' + localStorage.getItem('username') + '!';
     }
@@ -130,6 +131,7 @@
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
+        id('logout-button').classList.remove('hidden');
         id('cart-button').classList.remove('hidden');
         qs('h1').textContent = 'Welcome ' + id('login-username').value + '!';
       }
@@ -184,7 +186,7 @@
    */
   async function requestAllProducts() {
     try {
-      let allProducts = await fetch('/all/products');
+      let allProducts = await fetch('/products');
       await statusCheck(allProducts);
       allProducts = await allProducts.json();
       displayProducts(allProducts);
@@ -251,8 +253,13 @@
   function switchToProduct() {
     hideAll();
     id("product-page").classList.remove("hidden");
+    let product = this.id;
+    if (!product) {
+      console.log(this.getElementsByTagName('img')[0].alt);
+      product = this.getElementsByTagName('img')[0].alt;
+    }
 
-    fetch("/all/products/" + this.id)
+    fetch("/products/" + product)
       .then(statusCheck)
       .then(res => res.json())
       .then(populateProduct)
@@ -265,6 +272,9 @@
   function switchToMain() {
     hideAll();
     id("main-view").classList.remove("hidden");
+    if (id("main-view-products").innerHTML === "") {
+      requestAllProducts();
+    }
   }
 
   /**
@@ -315,8 +325,10 @@
     flowers.textContent = "Ability to flower: " + info.flowers;
     manageability.textContent = "Manageability: " + info.manageability;
 
-    if (info.capacity) {
+    if (info.capacity > 0) {
       stock.textContent = "Limited supply: " + info.capacity + " plants remaining.";
+    } else if (info.capacity === 0) {
+      stock.textContent = "Out of stock! Sorry :(";
     } else {
       stock.textContent = "No limit.";
     }
@@ -331,10 +343,36 @@
     id("max-pot-size").value = 3;
     id("max-price").addEventListener("mouseup", function() {
       id("price-output").textContent = "$" + id("max-price").value;
-    })
+    });
     id("max-pot-size").addEventListener("mouseup", function() {
       id("pot-output").textContent = id("max-pot-size").value + "in";
-    })
+    });
+    id('adv-filters').addEventListener('submit', (event) => {
+      event.preventDefault();
+      searchAdv();
+    });
+  }
+
+  /**
+   * Finds all the products where all conditions of the advanced filter that the user submitted are
+   * met.
+   */
+  function searchAdv() {
+    let url;
+    if (!id("search-term").value) {
+      url = "/products/?search= " + "&type=" + id('item-type').value +
+      "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
+    } else {
+      url = "/products/?search=" + id("search-term").value + "&type=" + id('item-type').value +
+      "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
+    }
+
+
+    fetch(url)
+      .then(statusCheck)
+      .then(res => res.json())
+      .then(displayProducts)
+      .catch(handleError);
   }
 
   /**
@@ -365,7 +403,7 @@
    * Finds all the products where the name contains the query that the user submitted.
    */
   function searchProducts() {
-    fetch("/all/products/?search=" + id("search-term").value)
+    fetch("/products/?search=" + id("search-term").value)
       .then(statusCheck)
       .then(res => res.json())
       .then(displayProducts)

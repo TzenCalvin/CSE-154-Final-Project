@@ -24,20 +24,25 @@ const SERVER_SIDE_ERROR_STATUS_CODE = 500;
 const CLIENT_SIDE_ERROR_STATUS_CODE = 400;
 let loggedIn = false;
 
-// gets all of the products' names, shortnames, and prices
-app.get('/all/products', async (req, res) => {
+// gets all of the products' names, shortnames, and prices based on the given parameters
+app.get('/products', async (req, res) => {
   try {
     let db = await getDBConnection();
     let search = req.query.search;
-    let qry;
+    let itemType = req.query.type;
+    let maxPrice = req.query.price;
+    let maxSize = req.query.size;
+    let qry = 'SELECT DISTINCT name, shortname, price FROM products';
     let result;
 
-    if (search) {
-      qry = 'SELECT DISTINCT name, shortname, price FROM products WHERE (name LIKE ? OR' +
-      ' description LIKE ? OR color LIKE ?) ORDER BY id';
+    if (search && itemType && maxPrice && maxSize) {
+      qry = qry + ' WHERE (name LIKE ? OR description LIKE ? OR color LIKE ?) AND `item-type` = ?' +
+      ' AND price <= ? AND `pot-size` <= ? ORDER BY id';
+      result = await db.all(qry, advSearch(search, itemType, maxPrice, maxSize));
+    } else if (search) {
+      qry = qry + ' WHERE (name LIKE ? OR description LIKE ? OR color LIKE ?) ORDER BY id';
       result = await db.all(qry, ['%' + search + '%', '%' + search + '%', '%' + search + '%']);
     } else {
-      qry = 'SELECT name, shortname, price FROM products';
       result = await db.all(qry);
     }
 
@@ -49,7 +54,7 @@ app.get('/all/products', async (req, res) => {
 });
 
 // Returns a JSON file of all the information about the given project
-app.get("/all/products/:product", async (req, res) => {
+app.get("/products/:product", async (req, res) => {
   try {
     let db = await getDBConnection();
     let product = req.params.product;
@@ -233,6 +238,19 @@ app.post('/user/signup', async (req, res) => {
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
   }
 });
+
+/**
+ * Creates an array with all the conditions that is usable in a search query.
+ * @param {string} search - search query submitted by the user
+ * @param {string} itemType - desired item type submitted by the user
+ * @param {int} maxPrice - desired max price submitted by the user
+ * @param {int} maxSize - desired max pot size submitted by the user
+ * @returns {array} - returns an array with all the conditions in a format that is usable in a
+ * search query.
+ */
+function advSearch(search, itemType, maxPrice, maxSize) {
+  return ['%' + search + '%', '%' + search + '%', '%' + search + '%', itemType, maxPrice, maxSize];
+}
 
 /**
  * Checks that the given username is not already in the database table

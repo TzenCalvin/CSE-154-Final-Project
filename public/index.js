@@ -348,8 +348,15 @@
    * met.
    */
   function searchAdv() {
-    let url = "/products/?search=" + id("search-term").value + "&type=" + id('item-type').value +
-    "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
+    let url;
+    if (!id("search-term").value) {
+      url = "/products/?search= " + "&type=" + id('item-type').value +
+      "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
+    } else {
+      url = "/products/?search=" + id("search-term").value + "&type=" + id('item-type').value +
+      "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
+    }
+
 
     fetch(url)
       .then(statusCheck)

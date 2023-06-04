@@ -76,14 +76,78 @@ app.get("/products/:product", async (req, res) => {
   }
 });
 
-app.get('/transaction/status', async (req, res) => {
-  try {
+// app.get('/transaction/successful', async (req, res) => {
 
+// });
+
+// checks if the transaction is successful or not
+app.post('/transaction/status', async (req, res) => {
+  try {
+    if (req.body.number && req.body.date && req.body.cvv) {
+      if (req.body.number.length === 16 && !isNaN(req.body.number)) {
+        if (req.body.date.length === 5) {
+          let date = req.body.date.split('/');
+          let month = date[0];
+          let year = date[1];
+          if (!isNaN(month) && !isNaN(year) && parseInt(month) <= 12 && parseInt(month) > 0 &&
+          parseInt(year) < 100 && parseInt(year) > 22) {
+            if (req.body.cvv.length === 3 && !isNaN(req.body.cvv)) {
+              res.type('text').send('success');
+            } else {
+              sendInvalidCvvMsg(res);
+            }
+          } else {
+            sendInvalidExpirationDateLength(res);
+          }
+        } else {
+          sendInvalidExpirationDateLength(res);
+        }
+      } else {
+        sendInvalidCreditCardMsg(res);
+      }
+    } else {sendMissingParamsMsg(res);}
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
   }
 });
+
+/**
+ * Sends an error message saying that one of the required params is missing.
+ * @param {Promise<object>} res - response from API.
+ */
+function sendMissingParamsMsg(res) {
+  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+  res.type('text').send('Missing credit card number and/or expiration date and/or CVV.');
+}
+
+/**
+ * Sends an error message saying that the given expiration date invalid.
+ * @param {Promise<object>} res - response from API.
+ */
+function sendInvalidExpirationDateLength(res) {
+  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+  res.type('text').send('Invalid expiration date. Be sure to put in a valid month and year in ' +
+  'the form of MM/YY including the \'/\' in your input.');
+}
+
+/**
+ * Sends an error message saying that the given CVV number is invalid.
+ * @param {Promise<object>} res - response from API.
+ */
+function sendInvalidCvvMsg(res) {
+  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+  res.type('text').send('Invalid CVV. Please input a valid 3 digit CVV number.');
+}
+
+/**
+ * Sends an error message saying that the given credit card number is invalid.
+ * @param {Promise<object>} res - response from API.
+ */
+function sendInvalidCreditCardMsg(res) {
+  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+  res.type('text').send('Invalid credit card number.');
+}
 
 // checks to see if the username and password are in the database
 app.post('/user/login', async (req, res) => {

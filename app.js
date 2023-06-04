@@ -71,10 +71,14 @@ app.get("/all/products/:product", async (req, res) => {
   }
 });
 
+// app.get('/transaction/successful', async (req, res) => {
+
+// });
+
 // checks if the transaction is successful or not
 app.post('/transaction/status', async (req, res) => {
   try {
-    if (req.body.number && req.body.date) {
+    if (req.body.number && req.body.date && req.body.cvv) {
       if (req.body.number.length === 16 && !isNaN(req.body.number)) {
         if (req.body.date.length === 5) {
           let date = req.body.date.split('/');
@@ -96,12 +100,21 @@ app.post('/transaction/status', async (req, res) => {
       } else {
         sendInvalidCreditCardMsg(res);
       }
-    }
+    } else {sendMissingParamsMsg(res);}
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
   }
 });
+
+/**
+ * Sends an error message saying that one of the required params is missing.
+ * @param {Promise<object>} res - response from API.
+ */
+function sendMissingParamsMsg(res) {
+  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+  res.type('text').send('Missing credit card number and/or expiration date and/or CVV.');
+}
 
 /**
  * Sends an error message saying that the given expiration date invalid.

@@ -184,7 +184,7 @@
    */
   async function requestAllProducts() {
     try {
-      let allProducts = await fetch('/all/products');
+      let allProducts = await fetch('/products');
       await statusCheck(allProducts);
       allProducts = await allProducts.json();
       displayProducts(allProducts);
@@ -252,7 +252,7 @@
     hideAll();
     id("product-page").classList.remove("hidden");
 
-    fetch("/all/products/" + this.id)
+    fetch("/products/" + this.id)
       .then(statusCheck)
       .then(res => res.json())
       .then(populateProduct)
@@ -315,8 +315,10 @@
     flowers.textContent = "Ability to flower: " + info.flowers;
     manageability.textContent = "Manageability: " + info.manageability;
 
-    if (info.capacity) {
+    if (info.capacity > 0) {
       stock.textContent = "Limited supply: " + info.capacity + " plants remaining.";
+    } else if (info.capacity === 0) {
+      stock.textContent = "Out of stock! Sorry :(";
     } else {
       stock.textContent = "No limit.";
     }
@@ -335,6 +337,21 @@
     id("max-pot-size").addEventListener("mouseup", function() {
       id("pot-output").textContent = id("max-pot-size").value + "in";
     })
+    id('adv-filters').addEventListener('submit', (event) => {
+      event.preventDefault();
+      searchAdv();
+    });
+  }
+
+  function searchAdv() {
+    let url = "/products/?search=" + id("search-term").value + "&type=" + id('item-type').value +
+    "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
+
+    fetch(url)
+      .then(statusCheck)
+      .then(res => res.json())
+      .then(displayProducts)
+      .catch(handleError);
   }
 
   /**
@@ -365,7 +382,7 @@
    * Finds all the products where the name contains the query that the user submitted.
    */
   function searchProducts() {
-    fetch("/all/products/?search=" + id("search-term").value)
+    fetch("/products/?search=" + id("search-term").value)
       .then(statusCheck)
       .then(res => res.json())
       .then(displayProducts)

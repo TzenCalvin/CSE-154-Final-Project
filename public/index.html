@@ -58,7 +58,7 @@
       <label>
         <input type="checkbox" id="toggle-filter" name="adv" value="filters"> Advanced filters
       </label>
-      <section id="adv-filters" class="hidden">
+      <form id="adv-filters" class="hidden">
         <section class="adv-filter-option">
           <label for="item-type">Item type:</label>
           <select id="item-type">
@@ -78,7 +78,9 @@
           <input type="range" id="max-pot-size" min="0" max="6" value="3" class="slider">
           <output id="pot-output">3in</output>
         </section>
-      </section>
+
+        <button>Apply filters</button>
+      </form>
       <section id="main-view-products" class="product-grid"></section>
     </section>
 

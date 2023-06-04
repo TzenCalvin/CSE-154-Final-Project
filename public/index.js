@@ -343,6 +343,10 @@
     });
   }
 
+  /**
+   * Finds all the products where all conditions of the advanced filter that the user submitted are
+   * met.
+   */
   function searchAdv() {
     let url = "/products/?search=" + id("search-term").value + "&type=" + id('item-type').value +
     "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;

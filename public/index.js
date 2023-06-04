@@ -333,10 +333,10 @@
     id("max-pot-size").value = 3;
     id("max-price").addEventListener("mouseup", function() {
       id("price-output").textContent = "$" + id("max-price").value;
-    })
+    });
     id("max-pot-size").addEventListener("mouseup", function() {
       id("pot-output").textContent = id("max-pot-size").value + "in";
-    })
+    });
     id('adv-filters').addEventListener('submit', (event) => {
       event.preventDefault();
       searchAdv();

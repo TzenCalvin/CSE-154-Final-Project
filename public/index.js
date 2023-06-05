@@ -123,6 +123,7 @@
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
         id('cart-button').classList.remove('hidden');
+        id('logout-button').classList.remove('hidden');
         qs('h1').textContent = 'Welcome ' + id('signup-username').value + '!';
       }
     } catch (err) {
@@ -364,6 +365,7 @@
     if (info.capacity > 0) {
       stock.textContent = "Limited supply: " + info.capacity + " plants remaining.";
       stock.style.color = 'green';
+      id("item-quantity").setAttribute("max", info.capacity);
     } else if (info.capacity === 0) {
       stock.textContent = "Out of stock! Sorry :(";
       stock.style.color = 'red';

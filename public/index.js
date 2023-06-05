@@ -308,21 +308,38 @@
       .catch(handleError);
   }
 
+  /**
+   * Adds the item and the quantity of a specific product to the user's cart.
+   */
   function addToCart() {
     let cart;
     let item = id("product-img").alt;
     let quantity = id("item-quantity").value;
-    if (sessionStorage.getItem("cart")) {
-      //dunno what happens when existing cart
-    } else if (sessionStorage.getItem("logged-in") === "true") {
+    if (!sessionStorage.getItem("cart") && sessionStorage.getItem('logged-in') === 'true') {
       cart = {};
       cart["username"] = localStorage.getItem("username");
       cart["items"] = [];
-      cart["items"][0] = item + ": " + quantity;
+      cart["items"].push({"shortname": item, "quantity": quantity});
+      window.sessionStorage.setItem("cart", JSON.stringify(cart));
+    } else if (sessionStorage.getItem("cart") && sessionStorage.getItem('logged-in') === 'true') {
+      cart = JSON.parse(sessionStorage.getItem('cart'));
+      let alreadyIn = false;
+      for (let i = 0; i < cart["items"].length; i++) {
+        if (item === cart["items"][i].shortname) {
+          cart["items"][i].quantity = parseInt(cart["items"][i].quantity) + parseInt(quantity);
+          alreadyIn = true;
+        }
+      }
+      if (!alreadyIn) {
+        cart["items"].push({"shortname": item, "quantity": quantity});
+      }
+      window.sessionStorage.setItem("cart", JSON.stringify(cart));
     } else {
-      //needs to make sure that user is logged in
+      id('product-page-error').textContent = 'You must log in before adding to your cart.';
+      setTimeout(() => {
+        id('product-page-error').textContent = '';
+      }, 5000);
     }
-    window.sessionStorage.setItem("cart", JSON.stringify(cart));
   }
 
   /**

@@ -22,7 +22,6 @@ app.use(express.json());
 const SERVER_SIDE_ERROR_MSG = 'Oh no! An error occurred on the server. Try again later.';
 const SERVER_SIDE_ERROR_STATUS_CODE = 500;
 const CLIENT_SIDE_ERROR_STATUS_CODE = 400;
-let loggedIn = false;
 
 // gets all of the products' names, shortnames, and prices based on the given parameters
 app.get('/products', async (req, res) => {
@@ -121,9 +120,9 @@ async function updateCapacity(capacityResult, db, item) {
 }
 
 // checks if the transaction is successful or not
-app.post('/transaction/status', (req, res) => {
+app.post('/transaction/status', async (req, res) => {
   try {
-    if (validateTransactionStatusRequest(req, res)) {
+    if (validateTransactionStatusRequest(req, res) && (await inStock(req, res))) {
       res.type('text').send('success');
     }
   } catch (err) {
@@ -133,13 +132,35 @@ app.post('/transaction/status', (req, res) => {
 });
 
 /**
+ * Checks to see that all the items in the cart are in stock.
+ * @param {object} req - request from user.
+ * @param {object} res - request from API.
+ * @returns {boolean} - returns true if the items in the cart are in stock, otherwise false.
+ */
+async function inStock(req, res) {
+  let cart = JSON.parse(req.body.cart);
+  let items = cart.items;
+  let db = await getDBConnection();
+  for (let i = 0; i < items.length; i++) {
+    let capacityQry = 'SELECT capacity FROM products WHERE id = ?';
+    let capacityResult = await db.get(capacityQry, items[i]);
+    if (capacityResult.capacity === 0) {
+      res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+      res.type('text').send('Please remove out of stock items from your cart.');
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
  * Validates the request for /transaction/status.
- * @param {*} req - request from user.
- * @param {*} res - response from API.
+ * @param {object} req - request from user.
+ * @param {object} res - response from API.
  * @returns {boolean} - returns true if the request is valid, otherwise false.
  */
 function validateTransactionStatusRequest(req, res) {
-  if (!(req.body.number && req.body.date && req.body.cvv)) {
+  if (!(req.body.number && req.body.date && req.body.cvv && req.body.cart)) {
     res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
     res.type('text').send('Missing one or more of the required params.');
     return false;
@@ -168,8 +189,8 @@ function validateTransactionStatusRequest(req, res) {
 
 /**
  * Checks to see if the given expiration date is valid.
- * @param {*} req - request from user.
- * @param {*} res - response from API.
+ * @param {object} req - request from user.
+ * @param {object} res - response from API.
  * @returns {boolean} - returns true if the date is valid, otherwise false.
  */
 function validateDate(req, res) {
@@ -200,7 +221,6 @@ app.post('/user/login', async (req, res) => {
           'Please make sure you\'ve entered your information in correctly, otherwise ' +
           'please click the sign up button to create a new account.');
       } else {
-        loggedIn = true;
         res.type('text').send('success');
       }
     } else {
@@ -231,7 +251,6 @@ app.post('/user/signup', async (req, res) => {
         let qry = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
         await db.run(qry, [req.body.email, req.body.username, req.body.password]);
         await db.close();
-        loggedIn = true;
         res.type('text').send('success');
       }
     } else {

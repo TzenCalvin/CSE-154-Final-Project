@@ -76,6 +76,7 @@
   function switchToCart() {
     hideAll();
     id('cart-page').classList.remove('hidden');
+    updateCartList();
     id('cart-back-button').addEventListener('click', function() {
       goHome();
     });
@@ -342,10 +343,20 @@
     }
   }
 
+  /**
+   * Updates and displays the current list of items in the user's cart.
+   */
   function updateCartList() {
+    id('cart-list').innerHTML = '';
     let cart = JSON.parse(sessionStorage.getItem('cart'));
     for (let i = 0; i < cart["items"].length; i++) {
-      id('product-name').textContent
+      let li = gen('li');
+      if (cart["items"][i].name.slice(-1) === 's' || cart["items"][i].quantity === '1') {
+        li.textContent = cart["items"][i].quantity + ' ' + cart["items"][i].name;
+      } else {
+        li.textContent = cart["items"][i].quantity + ' ' + cart["items"][i].name + 's';
+      }
+      id('cart-list').appendChild(li);
     }
   }
 

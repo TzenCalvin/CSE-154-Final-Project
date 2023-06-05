@@ -30,6 +30,10 @@
     id("toggle-filter").addEventListener('change', showAdvanced);
     inputBar.value = "";
     inputBar.addEventListener("input", checkInput);
+    id("add-cart").addEventListener('submit', (event) => {
+      event.preventDefault();
+      addToCart();
+    });
     checkIfLoggedIn();
 
     /**
@@ -302,6 +306,10 @@
       .then(res => res.json())
       .then(populateProduct)
       .catch(handleError);
+  }
+
+  function addToCart() {
+    console.log("I havne't done this part yet ;-;")
   }
 
   /**

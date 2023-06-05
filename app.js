@@ -58,17 +58,17 @@ app.get("/products/:product", async (req, res) => {
   try {
     let db = await getDBConnection();
     let product = req.params.product;
-    const query = "SELECT * FROM Products WHERE shortname = ?";
-    let productInfo = await db.get(query, product);
-    await db.close();
-
-    if (productInfo.length === 0) {
+    let checkProduct = await db.get("SELECT COUNT(*) AS count FROM Products WHERE shortname = " +
+    "?", product);
+    if (checkProduct.count === 0) {
       res.type("text")
         .status(CLIENT_SIDE_ERROR_STATUS_CODE)
         .send("Yikes. Product does not exist.");
-    } else {
-      res.json(productInfo);
     }
+    const query = "SELECT * FROM Products WHERE shortname = ?";
+    let productInfo = await db.get(query, product);
+    await db.close();
+    res.json(productInfo);
   } catch (err) {
     res.type("text")
       .status(SERVER_SIDE_ERROR_STATUS_CODE)
@@ -118,7 +118,7 @@ app.post('/transaction/status', async (req, res) => {
  */
 function sendMissingParamsMsg(res) {
   res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-  res.type('text').send('Missing credit card number and/or expiration date and/or CVV.');
+  res.type('text').send('Missing one or more of the required params.');
 }
 
 /**
@@ -168,7 +168,7 @@ app.post('/user/login', async (req, res) => {
       }
     } else {
       res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-      res.type('text').send('Missing username and/or password.');
+      res.type('text').send('Missing one or more of the required params.');
     }
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
@@ -199,7 +199,7 @@ app.post('/user/signup', async (req, res) => {
       }
     } else {
       res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-      res.type('text').send('Missing required email and/or username and/or password.');
+      res.type('text').send('Missing one or more of the required params.');
     }
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);

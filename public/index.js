@@ -313,25 +313,25 @@
    */
   function addToCart() {
     let cart;
-    let item = id("product-img").alt;
+    let item = id("product-name").textContent;
     let quantity = id("item-quantity").value;
     if (!sessionStorage.getItem("cart") && sessionStorage.getItem('logged-in') === 'true') {
       cart = {};
       cart["username"] = localStorage.getItem("username");
       cart["items"] = [];
-      cart["items"].push({"shortname": item, "quantity": quantity});
+      cart["items"].push({"name": item, "quantity": quantity});
       window.sessionStorage.setItem("cart", JSON.stringify(cart));
     } else if (sessionStorage.getItem("cart") && sessionStorage.getItem('logged-in') === 'true') {
       cart = JSON.parse(sessionStorage.getItem('cart'));
       let alreadyIn = false;
       for (let i = 0; i < cart["items"].length; i++) {
-        if (item === cart["items"][i].shortname) {
+        if (item === cart["items"][i].name) {
           cart["items"][i].quantity = parseInt(cart["items"][i].quantity) + parseInt(quantity);
           alreadyIn = true;
         }
       }
       if (!alreadyIn) {
-        cart["items"].push({"shortname": item, "quantity": quantity});
+        cart["items"].push({"name": item, "quantity": quantity});
       }
       window.sessionStorage.setItem("cart", JSON.stringify(cart));
     } else {
@@ -339,6 +339,13 @@
       setTimeout(() => {
         id('product-page-error').textContent = '';
       }, 5000);
+    }
+  }
+
+  function updateCartList() {
+    let cart = JSON.parse(sessionStorage.getItem('cart'));
+    for (let i = 0; i < cart["items"].length; i++) {
+      id('product-name').textContent
     }
   }
 

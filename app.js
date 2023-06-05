@@ -15,7 +15,7 @@ const multer = require('multer');
 const sqlite3 = require('sqlite3');
 const sqlite = require('sqlite');
 
-// const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 
 app.use(multer().none());
 app.use(express.urlencoded({extended: true}));

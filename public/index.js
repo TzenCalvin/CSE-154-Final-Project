@@ -292,7 +292,6 @@
     id("product-page").classList.remove("hidden");
     let product = this.id;
     if (!product) {
-      console.log(this.getElementsByTagName('img')[0].alt);
       product = this.getElementsByTagName('img')[0].alt;
     }
 
@@ -400,13 +399,12 @@
   function searchAdv() {
     let url;
     if (!id("search-term").value) {
-      url = "/products/?search= " + "&type=" + id('item-type').value +
-      "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
+      url = "/products/?search= &type=" + id('item-type').value + "&price=" +
+      id('max-price').value + "&size=" + id('max-pot-size').value;
     } else {
       url = "/products/?search=" + id("search-term").value + "&type=" + id('item-type').value +
       "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
     }
-
 
     fetch(url)
       .then(statusCheck)

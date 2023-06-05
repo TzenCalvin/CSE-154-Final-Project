@@ -20,7 +20,9 @@
     id('main-view-back-button').addEventListener('click', goHome);
     id('layout-button').addEventListener('click', toggleLayout);
     id('login-button').addEventListener('click', promptLogin);
+    id('logout-button').addEventListener('click', logoutUser);
     id('signup-button').addEventListener('click', promptSignup);
+    id('cart-button').addEventListener('click', switchToCart);
     id('logo').addEventListener("click", goHome);
     qs("#search-button").disabled = true;
     id("search-button").addEventListener("click", searchProducts);
@@ -31,8 +33,6 @@
     checkIfLoggedIn();
 
     /**
-     * make function for search
-     * id("search-button").addEventListener("click", doSomething);
      * make function for cart
      * id("cart-button").addEventListener("click", doSomething);
      * make funtion for adding to cart
@@ -44,7 +44,7 @@
    * Checks to see if the user is logged in upon a page load
    */
   function checkIfLoggedIn() {
-    if (sessionStorage.getItem('logged-in')) {
+    if (sessionStorage.getItem('logged-in') === 'true') {
       id('login-button').classList.add('hidden');
       id('logout-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');
@@ -64,6 +64,42 @@
       id('signup-error').textContent = '';
       signupUser();
     });
+  }
+
+  /**
+   * Switches the user view to the cart page.
+   */
+  function switchToCart() {
+    hideAll();
+    id('cart-page').classList.remove('hidden');
+    id('cart-back-button').addEventListener('click', function() {
+      goHome();
+    });
+    id('payment-button').addEventListener('click', switchToPayment);
+  }
+
+  /**
+   * Switches the user view to the payment page.
+   */
+  function switchToPayment() {
+    hideAll();
+    id('payment-page').classList.remove('hidden');
+    id('payment-back-button').addEventListener('click', function() {
+      switchToCart();
+    });
+  }
+
+  /**
+   * Logs out the user and brings them back to the front page.
+   */
+  function logoutUser() {
+    window.sessionStorage.setItem('logged-in', false);
+    hideAll();
+    id('menu-page').classList.remove('hidden');
+    id('login-button').classList.remove('hidden');
+    id('logout-button').classList.add('hidden');
+    id('cart-button').classList.add('hidden');
+    qs('h1').textContent = 'Welcome!';
   }
 
   /**
@@ -104,6 +140,7 @@
     id("login-page").classList.remove("hidden");
     if (window.localStorage.getItem('username')) {
       id('login-username').value = window.localStorage.getItem('username');
+      id('login-password').value = "";
     }
     qs('#login-page form').addEventListener('submit', (event) => {
       event.preventDefault();
@@ -327,10 +364,13 @@
 
     if (info.capacity > 0) {
       stock.textContent = "Limited supply: " + info.capacity + " plants remaining.";
+      stock.style.color = 'green';
     } else if (info.capacity === 0) {
       stock.textContent = "Out of stock! Sorry :(";
+      stock.style.color = 'red';
     } else {
       stock.textContent = "No limit.";
+      stock.style.color = 'blue';
     }
   }
 

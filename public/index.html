@@ -21,7 +21,7 @@
         <button id="logout-button" class="hidden">Log out</button>
       </nav>
     </header>
-    <section id="menu-page" class="hidden">
+    <section id="menu-page">
       <h1>Welcome!</h1>
       <h2>Most Succulent Deals</h2>
       <section class="product-grid">
@@ -109,7 +109,7 @@
         <img src="images/login-picture.png" alt="default user image" class="user-img">
         <form class="center">
           <input type="text" id="login-username" name="username" placeholder="Username" required>
-          <input type="text" id="login-password" name="password" placeholder="Password" required>
+          <input type="password" id="login-password" name="password" placeholder="Password" required>
           <button>Log in</button>
         </form>
         <p id="login-error" class="error-message"></p>
@@ -127,24 +127,40 @@
         <form class="center">
           <input type="text" id="email" name="email" placeholder="Email" required>
           <input type="text" id="signup-username" name="username" placeholder="Username" required>
-          <input type="text" id="signup-password" name="password" placeholder="Password" required>
+          <input type="password" id="signup-password" name="password" placeholder="Password" required>
           <button>Sign up</button>
         </form>
         <p id="signup-error" class="error-message"></p>
       </section>
     </section>
 
-    <section id="payment-page">
-      <button id="payment-back-button" class="back-button">Back</button>
+    <section id="cart-page" class="hidden">
+      <button id="cart-back-button" class="back-button">Back to front page</button>
+      <section id="cart-page-elements">
+        <h2>Your current cart:</h2>
+
+      </section>
+      <section class="center">
+        <button id="payment-button">Confirm and proceed to payment</button>
+      </section>
+    </section>
+
+    <section id="payment-page" class="hidden">
+      <button id="payment-back-button" class="back-button">Back to cart</button>
       <section id="payment-page-elements">
         <form class="center">
           <label for="card-number">Credit Card Number</label>
-          <input type="text" id="card-number" name="card-number" placeholder="xxxxxxxxxxxxxxxx" required>
+          <input type="text" id="card-number" name="card-number" placeholder="xxxxxxxxxxxxxxxx"
+          required>
           <label for="expiration-date">Card Expiration Date</label>
-          <input type="text" id="expiration-date" name="expiration-date" placeholder="MM/YY" required>
+          <input type="text" id="expiration-date" name="expiration-date" placeholder="MM/YY"
+          required>
           <label for="cvv">CVV (Card Verification Value)</label>
           <input type="text" id="cvv" name="cvv" placeholder="CVV" required>
         </form>
+      </section>
+      <section class="center">
+        <button id="pay-button">Pay</button>
       </section>
     </section>
 

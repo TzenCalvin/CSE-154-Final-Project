@@ -159,8 +159,8 @@ success
 **Error Handling:**
 - Possible 400 (invalid request) errors (all plain text):
   - If missing any of the parameters, returns an error with the message: `Missing one or more of the required params.`
-	- If passed a username that already exists in the database, an error is returned with the message: `Username already exists. Please choose a different username.`
-	- If missing an email that is already in use, an error is returned with the message: `The given email is already associated with an account. Enter a new email or enter the correct username and password for the previous email.`
+  - If passed a username that already exists in the database, an error is returned with the message: `Username already exists. Please choose a different username.`
+  - If missing an email that is already in use, an error is returned with the message: `The given email is already associated with an account. Enter a new email or enter the correct username and password for the previous email.`
 - Possible 500 error (all plain text):
   - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`
 
@@ -183,7 +183,7 @@ success
 **Error Handling:**
 - Possible 400 (invalid request) errors (all plain text):
   - If missing any of the parameters, returns an error with the message: `Missing one or more of the required params.`
-	- If passed a username and password that does not exist in the database, an error is returned with the message: `Uh oh! The given username and password do not exist. Please make sure you've entered your information in correctly, otherwise please click the sign up button to create a new account.`
+  - If passed a username and password that does not exist in the database, an error is returned with the message: `Uh oh! The given username and password do not exist. Please make sure you've entered your information in correctly, otherwise please click the sign up button to create a new account.`
 - Possible 500 error (all plain text):
   - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`
 

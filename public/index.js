@@ -309,7 +309,20 @@
   }
 
   function addToCart() {
-    console.log("I havne't done this part yet ;-;")
+    let cart;
+    let item = id("product-img").alt;
+    let quantity = id("item-quantity").value;
+    if (sessionStorage.getItem("cart")) {
+      //dunno what happens when existing cart
+    } else if (sessionStorage.getItem("logged-in") === "true") {
+      cart = {};
+      cart["username"] = localStorage.getItem("username");
+      cart["items"] = [];
+      cart["items"][0] = item + ": " + quantity;
+    } else {
+      //needs to make sure that user is logged in
+    }
+    window.sessionStorage.setItem("cart", JSON.stringify(cart));
   }
 
   /**
@@ -396,6 +409,7 @@
       id("product-manageability").classList.add("hidden");
     }
   }
+
   /**
    * displays the advanced filters for the user to use to refine their search.
    */

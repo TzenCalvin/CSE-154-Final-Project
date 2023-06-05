@@ -295,6 +295,7 @@
     if (!product) {
       product = this.getElementsByTagName('img')[0].alt;
     }
+    id("item-quantity").value = 1;
 
     fetch("/products/" + product)
       .then(statusCheck)
@@ -347,16 +348,10 @@
     let flowers = id("product-flowers");
     let manageability = id("product-manageability");
     let stock = id("product-stock");
+    id("add-button").disabled = false;
+    id("item-quantity").disabled = false;
 
-    if (info["item-type"] === "plant") {
-      height.classList.remove("hidden");
-      flowers.classList.remove("hidden");
-      manageability.classList.remove("hidden");
-    } else {
-      height.classList.add("hidden");
-      flowers.classList.add("hidden");
-      manageability.classList.add("hidden");
-    }
+    checkItemType(info["item-type"]);
 
     height.textContent = "Starting height: " + info["plant-height"] + "in";
     flowers.textContent = "Ability to flower: " + info.flowers;
@@ -369,12 +364,30 @@
     } else if (info.capacity === 0) {
       stock.textContent = "Out of stock! Sorry :(";
       stock.style.color = 'red';
+      id("add-button").disabled = true;
+      id("item-quantity").disabled = true;
     } else {
       stock.textContent = "No limit.";
       stock.style.color = 'blue';
     }
   }
 
+  /**
+   * Checks to see if the item type is a plant or a pot and either shows or omits product details
+   * accordingly.
+   * @param {String} type - the type of the product.
+   */
+  function checkItemType(type) {
+    if (type === "plant") {
+      id("product-height").classList.remove("hidden");
+      id("product-flowers").classList.remove("hidden");
+      id("product-manageability").classList.remove("hidden");
+    } else {
+      id("product-height").classList.add("hidden");
+      id("product-flowers").classList.add("hidden");
+      id("product-manageability").classList.add("hidden");
+    }
+  }
   /**
    * displays the advanced filters for the user to use to refine their search.
    */

@@ -15,6 +15,8 @@ const multer = require('multer');
 const sqlite3 = require('sqlite3');
 const sqlite = require('sqlite');
 
+// const cookieParser = require('cookie-parser');
+
 app.use(multer().none());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -22,7 +24,6 @@ app.use(express.json());
 const SERVER_SIDE_ERROR_MSG = 'Oh no! An error occurred on the server. Try again later.';
 const SERVER_SIDE_ERROR_STATUS_CODE = 500;
 const CLIENT_SIDE_ERROR_STATUS_CODE = 400;
-let loggedIn = false;
 
 // gets all of the products' names, shortnames, and prices based on the given parameters
 app.get('/products', async (req, res) => {
@@ -120,13 +121,27 @@ async function updateCapacity(capacityResult, db, item) {
   }
 }
 
+
+function loggedIn(req) {
+  if (req.cookies[logged] === 'true') {
+    console.log('yay logged in');
+    return true;
+  } else {
+    console.log('boo not logged in');
+    return false;
+  }
+}
+
 // checks if the transaction is successful or not
 app.post('/transaction/status', (req, res) => {
   try {
-    if (validateTransactionStatusRequest(req, res)) {
+    if (validateTransactionStatusRequest(req, res) && loggedIn(req)) {
       res.type('text').send('success');
+    } else {
+      res.type('text').send('boooooooooooooo');
     }
   } catch (err) {
+    console.log(err);
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
   }
@@ -200,7 +215,6 @@ app.post('/user/login', async (req, res) => {
           'Please make sure you\'ve entered your information in correctly, otherwise ' +
           'please click the sign up button to create a new account.');
       } else {
-        loggedIn = true;
         res.type('text').send('success');
       }
     } else {
@@ -231,7 +245,6 @@ app.post('/user/signup', async (req, res) => {
         let qry = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
         await db.run(qry, [req.body.email, req.body.username, req.body.password]);
         await db.close();
-        loggedIn = true;
         res.type('text').send('success');
       }
     } else {

@@ -20,7 +20,9 @@
     id('main-view-back-button').addEventListener('click', goHome);
     id('layout-button').addEventListener('click', toggleLayout);
     id('login-button').addEventListener('click', promptLogin);
+    id('logout-button').addEventListener('click', logoutUser);
     id('signup-button').addEventListener('click', promptSignup);
+    id('cart-button').addEventListener('click', switchToCart);
     id('logo').addEventListener("click", goHome);
     qs("#search-button").disabled = true;
     id("search-button").addEventListener("click", searchProducts);
@@ -31,8 +33,6 @@
     checkIfLoggedIn();
 
     /**
-     * make function for search
-     * id("search-button").addEventListener("click", doSomething);
      * make function for cart
      * id("cart-button").addEventListener("click", doSomething);
      * make funtion for adding to cart
@@ -44,7 +44,7 @@
    * Checks to see if the user is logged in upon a page load
    */
   function checkIfLoggedIn() {
-    if (sessionStorage.getItem('logged-in')) {
+    if (sessionStorage.getItem('logged-in') === 'true') {
       id('login-button').classList.add('hidden');
       id('logout-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');
@@ -64,6 +64,42 @@
       id('signup-error').textContent = '';
       signupUser();
     });
+  }
+
+  /**
+   * Switches the user view to the cart page.
+   */
+  function switchToCart() {
+    hideAll();
+    id('cart-page').classList.remove('hidden');
+    id('cart-back-button').addEventListener('click', function() {
+      goHome();
+    });
+    id('payment-button').addEventListener('click', switchToPayment);
+  }
+
+  /**
+   * Switches the user view to the payment page.
+   */
+  function switchToPayment() {
+    hideAll();
+    id('payment-page').classList.remove('hidden');
+    id('payment-back-button').addEventListener('click', function() {
+      switchToCart();
+    });
+  }
+
+  /**
+   * Logs out the user and brings them back to the front page.
+   */
+  function logoutUser() {
+    window.sessionStorage.setItem('logged-in', false);
+    hideAll();
+    id('menu-page').classList.remove('hidden');
+    id('login-button').classList.remove('hidden');
+    id('logout-button').classList.add('hidden');
+    id('cart-button').classList.add('hidden');
+    qs('h1').textContent = 'Welcome!';
   }
 
   /**
@@ -87,6 +123,7 @@
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
         id('cart-button').classList.remove('hidden');
+        id('logout-button').classList.remove('hidden');
         qs('h1').textContent = 'Welcome ' + id('signup-username').value + '!';
       }
     } catch (err) {
@@ -104,6 +141,7 @@
     id("login-page").classList.remove("hidden");
     if (window.localStorage.getItem('username')) {
       id('login-username').value = window.localStorage.getItem('username');
+      id('login-password').value = "";
     }
     qs('#login-page form').addEventListener('submit', (event) => {
       event.preventDefault();
@@ -255,9 +293,9 @@
     id("product-page").classList.remove("hidden");
     let product = this.id;
     if (!product) {
-      console.log(this.getElementsByTagName('img')[0].alt);
       product = this.getElementsByTagName('img')[0].alt;
     }
+    id("item-quantity").value = 1;
 
     fetch("/products/" + product)
       .then(statusCheck)
@@ -310,16 +348,10 @@
     let flowers = id("product-flowers");
     let manageability = id("product-manageability");
     let stock = id("product-stock");
+    id("add-button").disabled = false;
+    id("item-quantity").disabled = false;
 
-    if (info["item-type"] === "plant") {
-      height.classList.remove("hidden");
-      flowers.classList.remove("hidden");
-      manageability.classList.remove("hidden");
-    } else {
-      height.classList.add("hidden");
-      flowers.classList.add("hidden");
-      manageability.classList.add("hidden");
-    }
+    checkItemType(info["item-type"]);
 
     height.textContent = "Starting height: " + info["plant-height"] + "in";
     flowers.textContent = "Ability to flower: " + info.flowers;
@@ -327,13 +359,35 @@
 
     if (info.capacity > 0) {
       stock.textContent = "Limited supply: " + info.capacity + " plants remaining.";
+      stock.style.color = 'green';
+      id("item-quantity").setAttribute("max", info.capacity);
     } else if (info.capacity === 0) {
       stock.textContent = "Out of stock! Sorry :(";
+      stock.style.color = 'red';
+      id("add-button").disabled = true;
+      id("item-quantity").disabled = true;
     } else {
       stock.textContent = "No limit.";
+      stock.style.color = 'blue';
     }
   }
 
+  /**
+   * Checks to see if the item type is a plant or a pot and either shows or omits product details
+   * accordingly.
+   * @param {String} type - the type of the product.
+   */
+  function checkItemType(type) {
+    if (type === "plant") {
+      id("product-height").classList.remove("hidden");
+      id("product-flowers").classList.remove("hidden");
+      id("product-manageability").classList.remove("hidden");
+    } else {
+      id("product-height").classList.add("hidden");
+      id("product-flowers").classList.add("hidden");
+      id("product-manageability").classList.add("hidden");
+    }
+  }
   /**
    * displays the advanced filters for the user to use to refine their search.
    */
@@ -360,13 +414,12 @@
   function searchAdv() {
     let url;
     if (!id("search-term").value) {
-      url = "/products/?search= " + "&type=" + id('item-type').value +
-      "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
+      url = "/products/?search= &type=" + id('item-type').value + "&price=" +
+      id('max-price').value + "&size=" + id('max-pot-size').value;
     } else {
       url = "/products/?search=" + id("search-term").value + "&type=" + id('item-type').value +
       "&price=" + id('max-price').value + "&size=" + id('max-pot-size').value;
     }
-
 
     fetch(url)
       .then(statusCheck)

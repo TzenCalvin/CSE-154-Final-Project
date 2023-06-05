@@ -76,36 +76,31 @@ app.get("/products/:product", async (req, res) => {
   }
 });
 
-// app.get('/transaction/successful', async (req, res) => {
-
-// });
-
-// checks if the transaction is successful or not
-app.post('/transaction/status', async (req, res) => {
+// updates the database for the successful transaction and returns the transaction confirmation code
+app.post('/transaction/successful', async (req, res) => {
   try {
-    if (req.body.number && req.body.date && req.body.cvv) {
-      if (req.body.number.length === 16 && !isNaN(req.body.number)) {
-        if (req.body.date.length === 5) {
-          let date = req.body.date.split('/');
-          let month = date[0];
-          let year = date[1];
-          if (!isNaN(month) && !isNaN(year) && parseInt(month) <= 12 && parseInt(month) > 0 &&
-          parseInt(year) < 100 && parseInt(year) > 22) {
-            if (req.body.cvv.length === 3 && !isNaN(req.body.cvv)) {
-              res.type('text').send('success');
-            } else {
-              sendInvalidCvvMsg(res);
-            }
-          } else {
-            sendInvalidExpirationDateLength(res);
-          }
-        } else {
-          sendInvalidExpirationDateLength(res);
-        }
-      } else {
-        sendInvalidCreditCardMsg(res);
+    if (req.body.cart) {
+      let cart = JSON.parse(req.body.cart);
+      let items = cart.items;
+      let itemsObject = {'items': items};
+      let db = await getDBConnection();
+      for (let i = 0; i < items.length; i++) {
+        let capacityQry = 'SELECT capacity FROM products WHERE id = ?';
+        let capacityResult = await db.get(capacityQry, items[i]);
+        await updateCapacity(capacityResult, db, items[i]);
       }
-    } else {sendMissingParamsMsg(res);}
+      let usernameQry = 'SELECT id FROM users WHERE username = ?';
+      let usernameResult = await db.get(usernameQry, cart.username);
+      let transactionQry = 'INSERT INTO transactions (`product-id`, userid) VALUES (?, ?)';
+      await db.get(transactionQry, [itemsObject, usernameResult.id]);
+      let confirmationQry = 'SELECT confirmation FROM transactions ORDER BY confirmation DESC';
+      let confirmationNumber = await db.get(confirmationQry);
+      await db.close();
+      res.type('text').send(confirmationNumber);
+    } else {
+      res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+      res.type('text').send('Missing cart body param.');
+    }
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
@@ -113,40 +108,82 @@ app.post('/transaction/status', async (req, res) => {
 });
 
 /**
- * Sends an error message saying that one of the required params is missing.
- * @param {Promise<object>} res - response from API.
+ * Checks to see if the capacity is null.
+ * @param {JSON} capacityResult - capacity from the database for a certain product.
+ * @param {sqlite.Database} db - connection to the database table.
+ * @param {number} item - product id.
  */
-function sendMissingParamsMsg(res) {
-  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-  res.type('text').send('Missing one or more of the required params.');
+async function updateCapacity(capacityResult, db, item) {
+  if (capacityResult.capacity !== null) {
+    let capacityUpdate = 'UPDATE products SET capacity = (capacity - 1) WHERE id = ?';
+    await db.get(capacityUpdate, item);
+  }
+}
+
+// checks if the transaction is successful or not
+app.post('/transaction/status', (req, res) => {
+  try {
+    if (validateTransactionStatusRequest(req, res)) {
+      res.type('text').send('success');
+    }
+  } catch (err) {
+    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+  }
+});
+
+/**
+ * Validates the request for /transaction/status.
+ * @param {*} req - request from user.
+ * @param {*} res - response from API.
+ * @returns {boolean} - returns true if the request is valid, otherwise false.
+ */
+function validateTransactionStatusRequest(req, res) {
+  if (!(req.body.number && req.body.date && req.body.cvv)) {
+    res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send('Missing one or more of the required params.');
+    return false;
+  }
+  if (!(req.body.number.length === 16 && !isNaN(req.body.number))) {
+    res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send('Invalid credit card number.');
+    return false;
+  }
+  if (!(req.body.date.length === 5)) {
+    res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send('Invalid expiration date. Be sure to put in a valid month and year in ' +
+    'the form of MM/YY including the \'/\' in your input.');
+    return false;
+  }
+  if (!validateDate(req, res)) {
+    return false;
+  }
+  if (!(req.body.cvv.length === 3 && !isNaN(req.body.cvv))) {
+    res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send('Invalid credit card number.');
+    return false;
+  }
+  return true;
 }
 
 /**
- * Sends an error message saying that the given expiration date invalid.
- * @param {Promise<object>} res - response from API.
+ * Checks to see if the given expiration date is valid.
+ * @param {*} req - request from user.
+ * @param {*} res - response from API.
+ * @returns {boolean} - returns true if the date is valid, otherwise false.
  */
-function sendInvalidExpirationDateLength(res) {
-  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-  res.type('text').send('Invalid expiration date. Be sure to put in a valid month and year in ' +
-  'the form of MM/YY including the \'/\' in your input.');
-}
-
-/**
- * Sends an error message saying that the given CVV number is invalid.
- * @param {Promise<object>} res - response from API.
- */
-function sendInvalidCvvMsg(res) {
-  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-  res.type('text').send('Invalid CVV. Please input a valid 3 digit CVV number.');
-}
-
-/**
- * Sends an error message saying that the given credit card number is invalid.
- * @param {Promise<object>} res - response from API.
- */
-function sendInvalidCreditCardMsg(res) {
-  res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-  res.type('text').send('Invalid credit card number.');
+function validateDate(req, res) {
+  let date = req.body.date.split('/');
+  let month = date[0];
+  let year = date[1];
+  if (!(!isNaN(month) && !isNaN(year) && parseInt(month) <= 12 && parseInt(month) > 0 &&
+  parseInt(year) < 100 && parseInt(year) > 22)) {
+    res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send('Invalid expiration date. Be sure to put in a valid month and year in ' +
+    'the form of MM/YY including the \'/\' in your input.');
+    return false;
+  }
+  return true;
 }
 
 // checks to see if the username and password are in the database
@@ -181,11 +218,11 @@ app.post('/user/signup', async (req, res) => {
   try {
     if (req.body.email && req.body.username && req.body.password) {
       let db = await getDBConnection();
-      if (await uniqueUsername(req.body.username, db) !== undefined) {
+      if (await uniqueUsername(req.body.username, db)) {
         await db.close();
         res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
         res.type('text').send('Username already exists. Please choose a different username.');
-      } else if (await uniqueEmail(req.body.email, db) !== undefined) {
+      } else if (await uniqueEmail(req.body.email, db)) {
         await db.close();
         res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
         res.type('text').send('The given email is already associated with an account. ' +

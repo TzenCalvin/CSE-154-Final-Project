@@ -575,11 +575,11 @@
     let flowers = id("product-flowers");
     let manageability = id("product-manageability");
     let stock = id("product-stock");
-
     id("product-height").classList.remove("hidden");
     id("product-flowers").classList.remove("hidden");
     id("product-manageability").classList.remove("hidden");
-
+    id("add-button").disabled = true;
+    id("item-quantity").disabled = true;
     img.src = "images/lhs2.png";
     img.alt = "lol-pranked";
     name.textContent = "#pranks4dayz";
@@ -590,8 +590,8 @@
     height.textContent = "Starting height: pretty tall for a bird";
     flowers.textContent = "Ability to flower: idk man ask the bird";
     manageability.textContent = "Manageability: feed it sunflower seeds probably";
-    stock.textContent = "Limited supply: however many Oregonians remain.";
-    stock.style.color = 'blue';
+    stock.textContent = "Limited supply: however many Oregonians remain. You can't save them.";
+    stock.style.color = 'red';
   }
 
   /**

@@ -87,13 +87,13 @@ app.post('/transaction/successful', async (req, res) => {
       let itemsObject = {'items': items};
       let db = await getDBConnection();
       for (let i = 0; i < items.length; i++) {
-        let capacityQry = 'SELECT capacity FROM products WHERE id = ?';
-        let capacityResult = await db.get(capacityQry, items[i]);
-        await updateCapacity(capacityResult, db, items[i]);
+        let capacityQry = 'SELECT capacity FROM products WHERE name = ?';
+        let capacityResult = await db.get(capacityQry, items[i].name);
+        await updateCapacity(capacityResult, db, items[i].name);
       }
       let usernameQry = 'SELECT id FROM users WHERE username = ?';
       let usernameResult = await db.get(usernameQry, cart.username);
-      let transactionQry = 'INSERT INTO transactions (`product-id`, userid) VALUES (?, ?)';
+      let transactionQry = 'INSERT INTO transactions (products, userid) VALUES (?, ?)';
       await db.get(transactionQry, [itemsObject, usernameResult.id]);
       let confirmationQry = 'SELECT confirmation FROM transactions ORDER BY confirmation DESC';
       let confirmationNumber = await db.get(confirmationQry);
@@ -117,7 +117,7 @@ app.post('/transaction/successful', async (req, res) => {
  */
 async function updateCapacity(capacityResult, db, item) {
   if (capacityResult.capacity !== null) {
-    let capacityUpdate = 'UPDATE products SET capacity = (capacity - 1) WHERE id = ?';
+    let capacityUpdate = 'UPDATE products SET capacity = (capacity - 1) WHERE name = ?';
     await db.get(capacityUpdate, item);
   }
 }

@@ -452,11 +452,15 @@
     }
     id("item-quantity").value = 1;
 
-    fetch("/products/" + product)
-      .then(statusCheck)
-      .then(res => res.json())
-      .then(populateProduct)
-      .catch(handleError);
+    if(product === "prank-pic") {
+      getPranked();
+    } else {
+      fetch("/products/" + product)
+        .then(statusCheck)
+        .then(res => res.json())
+        .then(populateProduct)
+        .catch(handleError);
+    }
   }
 
   /**
@@ -560,6 +564,39 @@
     color.textContent = "Color: " + info.color;
 
     differentDetails(info);
+  }
+
+  /**
+   * GET PRANKEDDDDDD
+   */
+  function getPranked() {
+    let img = id("product-img");
+    let name = id("product-name");
+    let desc = id("product-description");
+    let price = id("product-price");
+    let size = id("product-size");
+    let color = id("product-color");
+    let height = id("product-height");
+    let flowers = id("product-flowers");
+    let manageability = id("product-manageability");
+    let stock = id("product-stock");
+
+    id("product-height").classList.remove("hidden");
+    id("product-flowers").classList.remove("hidden");
+    id("product-manageability").classList.remove("hidden");
+
+    img.src = "images/lhs2.png";
+    img.alt = "lol-pranked";
+    name.textContent = "#pranks4dayz";
+    desc.textContent = "YEAHHHHHHH GET PRANKED (what's happening) (i think it's a cardinal) (what)";
+    price.textContent = "Price: $200 in oregon dollars";
+    size.textContent = "Pot size: too big";
+    color.textContent = "Color: looks like a red bird";
+    height.textContent = "Starting height: pretty tall for a bird";
+    flowers.textContent = "Ability to flower: idk man ask the bird";
+    manageability.textContent = "Manageability: feed it sunflower seeds probably";
+    stock.textContent = "Limited supply: however many Oregonians remain.";
+    stock.style.color = 'blue';
   }
 
   /**

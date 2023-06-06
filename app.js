@@ -78,6 +78,8 @@ app.get("/products/:product", async (req, res) => {
   }
 });
 
+
+
 // updates the database for the successful transaction and returns the transaction confirmation code
 app.post('/transaction/successful', async (req, res) => {
   try {
@@ -92,7 +94,7 @@ app.post('/transaction/successful', async (req, res) => {
           let capacityResult = await db.get(capacityQry, items[i].name);
           await updateCapacity(capacityResult, db, items[i].name, items[i].quantity);
         }
-        let confirmationNumber = getConfirmationNumber(cart, itemsObject, db);
+        let confirmationNumber = await getConfirmationNumber(cart, itemsObject, db);
         await db.close();
         res.type('text').send(confirmationNumber.confirmation + '');
       } else {

@@ -393,7 +393,7 @@
       cart = {};
       cart["username"] = localStorage.getItem("username");
       cart["items"] = [];
-      cart["items"].push({"name": item, "quantity": quantity});
+      cart["items"].push({"name": item, "quantity": parseInt(quantity)});
       window.sessionStorage.setItem("cart", JSON.stringify(cart));
       generateMessage('Product successfully added to cart.');
     } else if (sessionStorage.getItem("cart") && sessionStorage.getItem('logged-in') === 'true') {
@@ -406,7 +406,7 @@
         }
       }
       if (!alreadyIn) {
-        cart["items"].push({"name": item, "quantity": quantity});
+        cart["items"].push({"name": item, "quantity": parseInt(quantity)});
       }
       window.sessionStorage.setItem("cart", JSON.stringify(cart));
       generateMessage('Product successfully added to cart.');

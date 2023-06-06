@@ -50,7 +50,7 @@
    */
   function checkIfLoggedIn() {
     if (sessionStorage.getItem('logged-in') === 'true') {
-      document.cookie
+      document.cookie;
       id('login-button').classList.add('hidden');
       id('logout-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');
@@ -104,6 +104,9 @@
     id("cvv").value = "";
   }
 
+  /**
+   * Processes payment and makes sure that the credit card information is valid.
+   */
   function processPayment() {
     let data = new FormData();
     data.append('number', id("card-number").value);
@@ -112,31 +115,42 @@
     id('payment-msg').textContent = "";
 
     fetch("/transaction/status", {method: "POST", body: data})
-    .then(statusCheck)
-    .then(res => res.text())
-    .then(addTransaction)
-    .catch(function(err) {
-      let errorMessage = err + '';
-      errorMessage = errorMessage.substring(7);
-      id('payment-msg').textContent = errorMessage;
-    });
+      .then(statusCheck)
+      .then(res => res.text())
+      .then(addTransaction)
+      .catch(function(err) {
+        let errorMessage = err + '';
+        errorMessage = errorMessage.substring(7);
+        id('payment-msg').textContent = errorMessage;
+      });
   }
 
+  /**
+   * Given that the credit card information is valid, creates a new transaction and lets the user
+   * know the confirmation number. Also updates the database with this new transaction.
+   * @param {Object} res - text response signalling whether the credit card information is valid.
+   */
   function addTransaction(res) {
     let data = new FormData();
     data.append('cart', sessionStorage.getItem('cart'));
 
     if (res === "success") {
       fetch("/transaction/successful", {method: "POST", body: data})
-      .then(statusCheck)
-      .then(res => res.text())
-      .then(successfulTransaction)
-      .catch(handleError);
+        .then(statusCheck)
+        .then(res => res.text())
+        .then(successfulTransaction)
+        .catch(handleError);
     } else {
       handleError();
     }
   }
 
+  /**
+   * Creates a new transaction and lets the user know the confirmation number and sends the user
+   * back to the main menu while clearing the cart. Also updates the database with this new
+   * transaction.
+   * @param {Object} res - text response of the confirmation number of the newly made transaction.
+   */
   function successfulTransaction(res) {
     id('payment-msg').textContent = "Transaction complete! Your confirmation number: " + res;
     id("back-to-main").classList.remove("hidden");

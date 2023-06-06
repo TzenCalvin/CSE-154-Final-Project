@@ -43,6 +43,8 @@ input {
 
 #login-button,
 #logout-button,
+#cart-button,
+#transactions-button,
 #logo {
   margin-right: 5px;
 }
@@ -50,6 +52,7 @@ input {
 #cart-button,
 #login-button,
 #logout-button,
+#transactions-button,
 #adv-filters {
   float: right;
 }
@@ -96,7 +99,7 @@ form button {
 .product-grid-info p,
 .product-list-info p,
 .product-grid-item,
-.product-list-item{
+.product-list-item {
   margin: 10px;
 }
 

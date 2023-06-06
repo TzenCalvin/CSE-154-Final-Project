@@ -15,7 +15,6 @@
     for (let i = 0; i < productGridButton.length; i++) {
       productGridButton[i].addEventListener("click", switchToProduct);
     }
-    qs("#product-back-button").addEventListener("click", switchToMain);
     id('view-all').addEventListener('click', requestAllProducts);
     id('main-view-back-button').addEventListener('click', goHome);
     id('layout-button').addEventListener('click', toggleLayout);
@@ -23,6 +22,7 @@
     id('logout-button').addEventListener('click', logoutUser);
     id('signup-button').addEventListener('click', promptSignup);
     id('cart-button').addEventListener('click', switchToCart);
+    id('transactions-button').addEventListener('click', switchToTransactions);
     id('logo').addEventListener("click", goHome);
     qs("#search-button").disabled = true;
     id("search-button").addEventListener("click", searchProducts);
@@ -36,13 +36,6 @@
     });
     document.cookie = 'logged-in=false';
     checkIfLoggedIn();
-
-    /**
-     * make function for cart
-     * id("cart-button").addEventListener("click", doSomething);
-     * make funtion for adding to cart
-     * id("add-to-cart-button").addEventListener("click", doSomething);
-     */
   }
 
   /**
@@ -53,6 +46,7 @@
       document.cookie = 'logged-in=true';
       id('login-button').classList.add('hidden');
       id('logout-button').classList.remove('hidden');
+      id('transactions-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');
       qs('h1').textContent = 'Welcome ' + localStorage.getItem('username') + '!';
     }
@@ -81,14 +75,19 @@
   function switchToCart() {
     hideAll();
     id('cart-page').classList.remove('hidden');
+    id('payment-button').disabled = false;
     updateCartList();
-    id('cart-back-button').addEventListener('click', function() {
-      goHome();
-    });
-    id('payment-button').addEventListener('click', switchToPayment);
+    id('cart-back-button').addEventListener('click', goHome);
+    if (window.sessionStorage.getItem("cart")) {
+      id('payment-button').disabled = false;
+      id('payment-button').addEventListener('click', switchToPayment);
+    } else {
+      id('payment-button').disabled = true;
+    }
     id('clear-cart-button').addEventListener('click', function() {
       window.sessionStorage.removeItem("cart");
       updateCartList();
+      id('payment-button').disabled = true;
     });
   }
 
@@ -98,13 +97,20 @@
   function switchToPayment() {
     hideAll();
     id('payment-page').classList.remove('hidden');
-    id('payment-back-button').addEventListener('click', function() {
-      switchToCart();
-    });
+    id('payment-back-button').addEventListener('click', switchToCart);
     id("pay-button").addEventListener("click", processPayment);
     id("card-number").value = "";
     id("expiration-date").value = "";
     id("cvv").value = "";
+  }
+
+  /**
+   * Switches the user view to the transactions page.
+   */
+  function switchToTransactions() {
+    hideAll();
+    id('transactions-page').classList.remove('hidden');
+    id('transactions-back-button').addEventListener('click', goHome);
   }
 
   /**
@@ -140,7 +146,7 @@
     if (res === "success") {
       fetch("/transaction/successful", {method: "POST", body: data})
         .then(statusCheck)
-        .then(res => res.text())
+        .then(resp => resp.text())
         .then(successfulTransaction)
         .catch(handleError);
     } else {
@@ -174,6 +180,7 @@
     id('menu-page').classList.remove('hidden');
     id('login-button').classList.remove('hidden');
     id('logout-button').classList.add('hidden');
+    id('transactions-button').classList.add('hidden');
     id('cart-button').classList.add('hidden');
     qs('h1').textContent = 'Welcome!';
     document.cookie = 'logged-in=false';
@@ -241,6 +248,7 @@
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
         id('logout-button').classList.remove('hidden');
+        id('transactions-button').classList.remove('hidden');
         id('cart-button').classList.remove('hidden');
         qs('h1').textContent = 'Welcome ' + id(type + '-username').value + '!';
       }
@@ -288,6 +296,7 @@
     id('main-view-products').innerHTML = '';
     id('main-view-products').classList.remove('product-list');
     id('main-view-products').classList.add('product-grid');
+    id('payment-msg').textContent = "";
   }
 
   /**
@@ -362,6 +371,7 @@
   function switchToProduct() {
     hideAll();
     id("product-page").classList.remove("hidden");
+    qs("#product-back-button").addEventListener("click", switchToMain);
     let product = this.id;
     if (!product) {
       product = this.getElementsByTagName('img')[0].alt;
@@ -400,7 +410,7 @@
         cart["items"][i].quantity = parseInt(quantity);
       }
       if (!alreadyIn) {
-        cart["items"].push({"name": item, "quantity": quantity});
+        cart["items"].push({"name": item, "quantity": parseInt(quantity)});
       }
       window.sessionStorage.setItem("cart", JSON.stringify(cart));
       generateMessage('Product successfully added to cart.');

@@ -369,6 +369,7 @@
       cart["items"] = [];
       cart["items"].push({"name": item, "quantity": quantity});
       window.sessionStorage.setItem("cart", JSON.stringify(cart));
+      generateMessage('Product successfully added to cart.');
     } else if (sessionStorage.getItem("cart") && sessionStorage.getItem('logged-in') === 'true') {
       cart = JSON.parse(sessionStorage.getItem('cart'));
       let alreadyIn = false;

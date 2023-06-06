@@ -20,6 +20,7 @@ const cookieParser = require('cookie-parser');
 app.use(multer().none());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(cookieParser());
 
 const SERVER_SIDE_ERROR_MSG = 'Oh no! An error occurred on the server. Try again later.';
 const SERVER_SIDE_ERROR_STATUS_CODE = 500;
@@ -86,13 +87,13 @@ app.post('/transaction/successful', async (req, res) => {
       let itemsObject = {'items': items};
       let db = await getDBConnection();
       for (let i = 0; i < items.length; i++) {
-        let capacityQry = 'SELECT capacity FROM products WHERE id = ?';
-        let capacityResult = await db.get(capacityQry, items[i]);
-        await updateCapacity(capacityResult, db, items[i]);
+        let capacityQry = 'SELECT capacity FROM products WHERE name = ?';
+        let capacityResult = await db.get(capacityQry, items[i].name);
+        await updateCapacity(capacityResult, db, items[i].name);
       }
       let usernameQry = 'SELECT id FROM users WHERE username = ?';
       let usernameResult = await db.get(usernameQry, cart.username);
-      let transactionQry = 'INSERT INTO transactions (`product-id`, userid) VALUES (?, ?)';
+      let transactionQry = 'INSERT INTO transactions (products, userid) VALUES (?, ?)';
       await db.get(transactionQry, [itemsObject, usernameResult.id]);
       let confirmationQry = 'SELECT confirmation FROM transactions ORDER BY confirmation DESC';
       let confirmationNumber = await db.get(confirmationQry);
@@ -116,18 +117,20 @@ app.post('/transaction/successful', async (req, res) => {
  */
 async function updateCapacity(capacityResult, db, item) {
   if (capacityResult.capacity !== null) {
-    let capacityUpdate = 'UPDATE products SET capacity = (capacity - 1) WHERE id = ?';
+    let capacityUpdate = 'UPDATE products SET capacity = (capacity - 1) WHERE name = ?';
     await db.get(capacityUpdate, item);
   }
 }
 
-
+/**
+ * Checks to see if the user is logged in or not.
+ * @param {object} req - request from user.
+ * @returns {boolean} - true if the user is logged in, false otherwise.
+ */
 function loggedIn(req) {
-  if (req.cookies[logged] === 'true') {
-    console.log('yay logged in');
+  if (req.cookies['logged-in'] === 'true') {
     return true;
   } else {
-    console.log('boo not logged in');
     return false;
   }
 }

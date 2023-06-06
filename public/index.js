@@ -65,6 +65,9 @@
   function promptSignup() {
     hideAll();
     id('signup-page').classList.remove('hidden');
+    id("email").value = "";
+    id("signup-username").value = "";
+    id("signup-password").value = "";
     qs('#signup-page form').addEventListener('submit', (event) => {
       event.preventDefault();
       id('signup-error').textContent = '';

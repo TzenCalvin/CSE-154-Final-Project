@@ -125,7 +125,6 @@
   function addTransaction(res) {
     let data = new FormData();
     data.append('cart', sessionStorage.getItem('cart'));
-    console.log(data);
 
     if (res === "success") {
       fetch("/transaction/successful", {method: "POST", body: data})

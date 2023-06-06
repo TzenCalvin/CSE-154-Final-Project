@@ -73,11 +73,17 @@
     id("email").value = "";
     id("signup-username").value = "";
     id("signup-password").value = "";
+    id('signup-back-button').addEventListener('click', goBackToLoginPage);
     qs('#signup-page form').addEventListener('submit', (event) => {
       event.preventDefault();
       id('signup-error').textContent = '';
       signupUser();
     });
+  }
+
+  function goBackToLoginPage() {
+    hideAll();
+    promptLogin();
   }
 
   /**

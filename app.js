@@ -137,7 +137,7 @@ function loggedIn(req) {
 // checks if the transaction is successful or not
 app.post('/transaction/status', (req, res) => {
   try {
-    if (validateTransactionStatusRequest(req, res) && loggedIn(req)) {
+    if (validateTransactionStatusRequest(req, res)) {
       res.type('text').send('success');
     } else {
       res.type('text').send('boooooooooooooo');

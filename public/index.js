@@ -108,7 +108,7 @@
     let data = new FormData();
     data.append('number', id("card-number").value);
     data.append('date', id("expiration-date").value);
-    data.append('body', id("cvv").value);
+    data.append('cvv', id("cvv").value);
     id('payment-msg').textContent = "";
 
     fetch("/transaction/status", {method: "POST", body: data})
@@ -122,16 +122,20 @@
     });
   }
 
-  function addTransaction() {
+  function addTransaction(res) {
     let data = new FormData();
-    let cart = JSON.parse(sessionStorage.getItem('cart'));
-    data.append('cart', cart);
+    data.append('cart', sessionStorage.getItem('cart'));
+    console.log(data);
 
-    fetch("/transaction/successful", {method: "POST", body: data})
-    .then(statusCheck)
-    .then(res => res.text())
-    .then(successfulTransaction)
-    .catch(handleError);
+    if (res === "success") {
+      fetch("/transaction/successful", {method: "POST", body: data})
+      .then(statusCheck)
+      .then(res => res.text())
+      .then(successfulTransaction)
+      .catch(handleError);
+    } else {
+      handleError();
+    }
   }
 
   function successfulTransaction(res) {

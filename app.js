@@ -104,6 +104,7 @@ app.post('/transaction/successful', async (req, res) => {
       res.type('text').send('Missing cart body param.');
     }
   } catch (err) {
+    console.log(err);
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
   }

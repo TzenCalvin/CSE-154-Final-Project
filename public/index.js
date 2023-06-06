@@ -15,14 +15,12 @@
   window.addEventListener("load", init);
 
   /**
-   * add
-   * function comment
+   * Sets up the necessary buttons and displays the welcome page when the webpage loads.
    */
   function init() {
     let productGridButton = qsa(".product-grid-item");
     let inputBar = id("search-term");
-    qs("#login-button").addEventListener("click", switchLoginView);
-    qs("#login-back-button").addEventListener("click", switchLoginView);
+    qs("#login-back-button").addEventListener("click", goHome);
     for (let i = 0; i < productGridButton.length; i++) {
       productGridButton[i].addEventListener("click", switchToProduct);
     }
@@ -73,7 +71,7 @@
     id("email").value = "";
     id("signup-username").value = "";
     id("signup-password").value = "";
-    id('signup-back-button').addEventListener('click', goBackToLoginPage);
+    id('signup-back-button').addEventListener('click', goToLoginPage);
     qs('#signup-page form').addEventListener('submit', (event) => {
       event.preventDefault();
       id('signup-error').textContent = '';
@@ -84,7 +82,7 @@
   /**
    * Takes the user from the signup page back to the login page.
    */
-  function goBackToLoginPage() {
+  function goToLoginPage() {
     hideAll();
     promptLogin();
   }
@@ -279,6 +277,7 @@
   function promptLogin() {
     hideAll();
     id("login-page").classList.remove("hidden");
+    id('login-button').classList.add('hidden');
     if (window.localStorage.getItem('username')) {
       id('login-username').value = window.localStorage.getItem('username');
       id('login-password').value = "";
@@ -371,6 +370,10 @@
     id('main-view-products').classList.remove('product-list');
     id('main-view-products').classList.add('product-grid');
     id('payment-msg').textContent = "";
+    id('search-term').value = '';
+    if (sessionStorage.getItem('logged-in') !== 'true') {
+      id('login-button').classList.remove('hidden');
+    }
   }
 
   /**
@@ -434,14 +437,6 @@
   /**
    * send user to login page
    */
-  function switchLoginView() {
-    id("menu-page").classList.toggle("hidden");
-    id("login-page").classList.toggle("hidden");
-  }
-
-  /**
-   * send user to login page
-   */
   function switchToProduct() {
     hideAll();
     id("product-page").classList.remove("hidden");
@@ -452,7 +447,7 @@
     }
     id("item-quantity").value = 1;
 
-    if(product === "prank-pic") {
+    if (product === "prank-pic") {
       getPranked();
     } else {
       fetch("/products/" + product)

@@ -1,3 +1,14 @@
+/*
+ * Names: Calvin Tzen and Hannah King
+ * Date: 06.05.2023
+ * Section and TAs: CSE 154 AF with Donovan Kong and Sonia Saitawdekar, CSE 154 AG with Tara Weuger
+ * and Allison Ho
+ *
+ * This is the JS to implement the UI for the our e-commerce website and allows the user to browse
+ * our website's wares, log in to already existing accounts and sign up for new ones, add items
+ * to carts and mass buy items, search and refine the search for specific items, and view all past
+ * transactions for a the user that is currently logged in.
+ */
 "use strict";
 (function() {
 

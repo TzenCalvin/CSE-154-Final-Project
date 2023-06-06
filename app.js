@@ -1,9 +1,15 @@
-/**
- * Name:
- * Date:
- * Section:
+/*
+ * Names: Calvin Tzen and Hannah King
+ * Date: 06.05.2023
+ * Section and TAs: CSE 154 AF with Donovan Kong and Sonia Saitawdekar, CSE 154 AG with Tara Weuger
+ * and Allison Ho
  *
- * Description
+ * This is the JS to implement the API for the our e-commerce website and allows the program to
+ * grab the information needed to display to the users, including a list of all our products and the
+ * details about each individual item. In addition, the API checks whether or not transactions are
+ * valid and add them to our database and whether or not logins/signups are successful. Lastly, this
+ * allows the program to access every past transaction made by a user. This also hosts the program
+ * on a web server via Node.js.
  */
 'use strict';
 

@@ -84,7 +84,8 @@ app.get('/transaction/history/:user', async (req, res) => {
     if (loggedIn(req)) {
       let db = await getDBConnection();
       if (await uniqueUsername(req.params.user, db)) {
-        let qry = 'SELECT products FROM transactions JOIN users ON userid=id WHERE username = ?';
+        let qry = 'SELECT confirmation, products FROM transactions ' +
+        'JOIN users ON userid=id WHERE username = ?';
         let userTransactions = await db.all(qry, [req.params.user]);
         await db.close();
         if (userTransactions.length === 0) {
@@ -105,10 +106,18 @@ app.get('/transaction/history/:user', async (req, res) => {
       res.type('text').send('You must be logged in to view your transaction history.');
     }
   } catch (err) {
-    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
-    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+    handleError(res);
   }
 });
+
+/**
+ * Sends the server side error message.
+ * @param {object} res - response from the API.
+ */
+function handleError(res) {
+  res.status(SERVER_SIDE_ERROR_STATUS_CODE);
+  res.type('text').send(SERVER_SIDE_ERROR_MSG);
+}
 
 /**
  * Checks that the given username is not already in the database table

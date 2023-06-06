@@ -111,6 +111,57 @@
     hideAll();
     id('transactions-page').classList.remove('hidden');
     id('transactions-back-button').addEventListener('click', goHome);
+    if (sessionStorage.getItem('logged-in') === 'true') {
+      requestTransactionHistory();
+    }
+  }
+
+  /**
+   * Gets the transaction history for a certain user from the API.
+   */
+  async function requestTransactionHistory() {
+    try {
+      let history = await fetch('/transaction/history/' + localStorage.getItem('username'));
+      await statusCheck(history);
+      history = await history.json();
+      displayTransactionHistory(history);
+    } catch (err) {
+      console.log(err);
+      handleError();
+    }
+  }
+
+  /**
+   * Displays the transaction history of a certain user.
+   * @param {JSON} history - transaction history of a certain user
+   */
+  function displayTransactionHistory(history) {
+    for (let i = 0; i < history.length; i++) {
+      let card = gen('article');
+      card.classList.add('center');
+
+      let confimation = gen('h2');
+      confimation.textContent = 'Confirmation number: ' + history[i].confirmation;
+      card.appendChild(confimation);
+
+      let list = gen('ul');
+      for (let j = 0; j < history[i].products.items.length; j++) {
+        let li = gen('li');
+        if (history[i].products.items[j].name.slice(-1) === 's' ||
+          history[i].products.items[j].quantity === '1') {
+          li.textContent = history[i].products.items[j].quantity + ' ' +
+          history[i].products.items[j].name;
+        } else {
+          li.textContent = history[i].products.items[j].quantity + ' ' +
+          history[i].products.items[j].name + 's';
+        }
+        list.appendChild(li);
+      }
+
+      card.appendChild(list);
+
+      id('transactions-page-elements').appendChild(card);
+    }
   }
 
   /**

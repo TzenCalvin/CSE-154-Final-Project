@@ -104,7 +104,43 @@
   }
 
   function processPayment() {
+    let data = new FormData();
+    data.append('number', id("card-number").value);
+    data.append('date', id("expiration-date").value);
+    data.append('body', id("cvv").value);
+    id('payment-msg').textContent = "";
 
+    fetch("/transaction/status", {method: "POST", body: data})
+    .then(statusCheck)
+    .then(res => res.text())
+    .then(addTransaction)
+    .catch(function(err) {
+      let errorMessage = err + '';
+      errorMessage = errorMessage.substring(7);
+      id('payment-msg').textContent = errorMessage;
+    });
+  }
+
+  function addTransaction() {
+    let data = new FormData();
+    let cart = JSON.parse(sessionStorage.getItem('cart'));
+    data.append('cart', cart);
+
+    fetch("/transaction/successful", {method: "POST", body: data})
+    .then(statusCheck)
+    .then(res => res.text())
+    .then(successfulTransaction)
+    .catch(handleError);
+  }
+
+  function successfulTransaction(res) {
+    id('payment-msg').textContent = "Transaction complete! Your confirmation number: " + res;
+    id("back-to-main").classList.remove("hidden");
+    setTimeout(() => {
+      id("back-to-main").classList.add("hidden");
+      window.sessionStorage.removeItem("cart");
+      goHome();
+    }, 3000);
   }
 
   /**
@@ -191,6 +227,7 @@
       id(type + '-error').textContent = errorMessage;
     }
   }
+
   /**
    * Switches the layout of all of the products between a grid and a list layout.
    */

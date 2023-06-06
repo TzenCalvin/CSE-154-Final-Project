@@ -407,7 +407,6 @@
           cart["items"][i].quantity = parseInt(cart["items"][i].quantity) + parseInt(quantity);
           alreadyIn = true;
         }
-        cart["items"][i].quantity = parseInt(quantity);
       }
       if (!alreadyIn) {
         cart["items"].push({"name": item, "quantity": parseInt(quantity)});

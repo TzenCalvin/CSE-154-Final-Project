@@ -98,7 +98,7 @@ app.post('/transaction/successful', async (req, res) => {
       let confirmationQry = 'SELECT confirmation FROM transactions ORDER BY confirmation DESC';
       let confirmationNumber = await db.get(confirmationQry);
       await db.close();
-      res.type('text').send(confirmationNumber);
+      res.type('text').send(confirmationNumber.confirmation);
     } else {
       res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
       res.type('text').send('Missing cart body param.');
@@ -138,7 +138,7 @@ function loggedIn(req) {
 // checks if the transaction is successful or not
 app.post('/transaction/status', (req, res) => {
   try {
-    if (validateTransactionStatusRequest(req, res) && loggedIn(req)) {
+    if (validateTransactionStatusRequest(req, res)) {
       res.type('text').send('success');
     } else {
       res.type('text').send('boooooooooooooo');

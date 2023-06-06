@@ -82,6 +82,7 @@ app.get("/products/:product", async (req, res) => {
 app.post('/transaction/successful', async (req, res) => {
   try {
     if (req.body.cart) {
+      console.log(req.body.cart);
       let cart = JSON.parse(req.body.cart);
       let items = cart.items;
       let itemsObject = {'items': items};
@@ -98,7 +99,7 @@ app.post('/transaction/successful', async (req, res) => {
       let confirmationQry = 'SELECT confirmation FROM transactions ORDER BY confirmation DESC';
       let confirmationNumber = await db.get(confirmationQry);
       await db.close();
-      res.type('text').send(confirmationNumber);
+      res.type('text').send(confirmationNumber.confirmation + '');
     } else {
       res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
       res.type('text').send('Missing cart body param.');
@@ -130,9 +131,8 @@ async function updateCapacity(capacityResult, db, item) {
 function loggedIn(req) {
   if (req.cookies['logged-in'] === 'true') {
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 // checks if the transaction is successful or not
@@ -152,8 +152,8 @@ app.post('/transaction/status', (req, res) => {
 
 /**
  * Validates the request for /transaction/status.
- * @param {*} req - request from user.
- * @param {*} res - response from API.
+ * @param {object} req - request from user.
+ * @param {object} res - response from API.
  * @returns {boolean} - returns true if the request is valid, otherwise false.
  */
 function validateTransactionStatusRequest(req, res) {
@@ -186,8 +186,8 @@ function validateTransactionStatusRequest(req, res) {
 
 /**
  * Checks to see if the given expiration date is valid.
- * @param {*} req - request from user.
- * @param {*} res - response from API.
+ * @param {object} req - request from user.
+ * @param {object} res - response from API.
  * @returns {boolean} - returns true if the date is valid, otherwise false.
  */
 function validateDate(req, res) {

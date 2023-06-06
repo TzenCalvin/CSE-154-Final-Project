@@ -82,7 +82,6 @@ app.get("/products/:product", async (req, res) => {
 app.post('/transaction/successful', async (req, res) => {
   try {
     if (req.body.cart) {
-      console.log(req.body.cart);
       let cart = JSON.parse(req.body.cart);
       let items = cart.items;
       let itemsObject = {'items': items};
@@ -95,7 +94,7 @@ app.post('/transaction/successful', async (req, res) => {
       let usernameQry = 'SELECT id FROM users WHERE username = ?';
       let usernameResult = await db.get(usernameQry, cart.username);
       let transactionQry = 'INSERT INTO transactions (products, userid) VALUES (?, ?)';
-      await db.get(transactionQry, [itemsObject, usernameResult.id]);
+      await db.get(transactionQry, [JSON.stringify(itemsObject), usernameResult.id]);
       let confirmationQry = 'SELECT confirmation FROM transactions ORDER BY confirmation DESC';
       let confirmationNumber = await db.get(confirmationQry);
       await db.close();

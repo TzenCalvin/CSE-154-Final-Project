@@ -34,7 +34,7 @@
       event.preventDefault();
       addToCart();
     });
-    document.cookie = 'logged-in'
+    document.cookie = 'logged-in=false';
     checkIfLoggedIn();
 
     /**
@@ -50,6 +50,7 @@
    */
   function checkIfLoggedIn() {
     if (sessionStorage.getItem('logged-in') === 'true') {
+      document.cookie
       id('login-button').classList.add('hidden');
       id('logout-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');

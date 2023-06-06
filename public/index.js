@@ -34,6 +34,7 @@
       event.preventDefault();
       addToCart();
     });
+    document.cookie = 'logged-in'
     checkIfLoggedIn();
 
     /**

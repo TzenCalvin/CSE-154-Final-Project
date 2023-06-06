@@ -89,7 +89,7 @@ app.post('/transaction/successful', async (req, res) => {
       for (let i = 0; i < items.length; i++) {
         let capacityQry = 'SELECT capacity FROM products WHERE name = ?';
         let capacityResult = await db.get(capacityQry, items[i].name);
-        await updateCapacity(capacityResult, db, items[i].name);
+        await updateCapacity(capacityResult, db, items[i].name, items[i].quantity);
       }
       let usernameQry = 'SELECT id FROM users WHERE username = ?';
       let usernameResult = await db.get(usernameQry, cart.username);
@@ -110,15 +110,16 @@ app.post('/transaction/successful', async (req, res) => {
 });
 
 /**
- * Checks to see if the capacity is null.
+ * Checks to see if the capacity is null. If not, updates the databse accordingly.
  * @param {JSON} capacityResult - capacity from the database for a certain product.
  * @param {sqlite.Database} db - connection to the database table.
- * @param {number} item - product id.
+ * @param {int} item - product id.
+ * @param {int} quantity - number of product purchased.
  */
-async function updateCapacity(capacityResult, db, item) {
+async function updateCapacity(capacityResult, db, item, quantity) {
   if (capacityResult.capacity !== null) {
-    let capacityUpdate = 'UPDATE products SET capacity = (capacity - 1) WHERE name = ?';
-    await db.get(capacityUpdate, item);
+    let capacityUpdate = 'UPDATE products SET capacity = (capacity - ?) WHERE name = ?';
+    await db.get(capacityUpdate, [quantity, item]);
   }
 }
 

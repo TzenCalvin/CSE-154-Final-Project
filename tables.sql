@@ -14,6 +14,14 @@ CREATE TABLE "products" (
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 
+CREATE TABLE "transactions" (
+	"confirmation"	INTEGER NOT NULL UNIQUE,
+	"products"	TEXT NOT NULL,
+	"userid"	INTEGER NOT NULL,
+	PRIMARY KEY("confirmation" AUTOINCREMENT),
+	FOREIGN KEY("userid") REFERENCES "users"("id")
+);
+
 CREATE TABLE "users" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"email"	TEXT NOT NULL UNIQUE,

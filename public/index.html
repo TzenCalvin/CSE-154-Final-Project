@@ -19,7 +19,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Sigmar&display=swap" rel="stylesheet">
     <script src="index.js"></script>
   </head>
-
   <body>
     <header>
       <img id="logo" src="images/plant-logo.png" alt="makeshift logo">
@@ -62,13 +61,10 @@
         <button id="view-all">View All Products</button>
       </section>
     </section>
-
     <section id="main-view" class="hidden">
       <button id="main-view-back-button" class="back-button">Back</button>
       <button id="layout-button">Change layout</button>
-      <label>
-        <input type="checkbox" id="toggle-filter" name="adv" value="filters"> Advanced filters
-      </label>
+      <input type="checkbox" id="toggle-filter" name="adv" value="filters"> Advanced filters
       <form id="adv-filters" class="hidden">
         <section class="adv-filter-option">
           <label for="item-type">Item type:</label>
@@ -77,24 +73,20 @@
             <option value="pot">pots</option>
           </select>
         </section>
-
         <section class="adv-filter-option">
           <label for="max-price">Max price:</label>
           <input type="range" id="max-price" min="0" max="10" value="5" class="slider">
           <output id="price-output">$5</output>
         </section>
-
         <section class="adv-filter-option">
           <label for="max-pot-size">Max pot size:</label>
           <input type="range" id="max-pot-size" min="0" max="6" value="3" class="slider">
           <output id="pot-output">3in</output>
         </section>
-
         <button>Apply filters</button>
       </form>
       <section id="main-view-products" class="product-grid"></section>
     </section>
-
     <section id="product-page" class="hidden">
       <button id="product-back-button" class="back-button">Back to item catalog</button>
       <div class="flex-container">
@@ -118,7 +110,6 @@
       </form>
       <p id="product-page-message"></p>
     </section>
-
     <section id="login-page" class="hidden">
       <button id="login-back-button" class="back-button">Back</button>
       <section id="login-page-elements">
@@ -136,7 +127,6 @@
         </section>
       </section>
     </section>
-
     <section id="signup-page" class="hidden">
       <button id="signup-back-button" class="back-button">Back</button>
       <section id="signup-page-elements">
@@ -151,7 +141,6 @@
         <p id="signup-error" class="error-message"></p>
       </section>
     </section>
-
     <section id="cart-page" class="hidden">
       <button id="cart-back-button" class="back-button">Back to front page</button>
       <section class="center">
@@ -162,7 +151,6 @@
         <button id="clear-cart-button">Clear cart</button>
       </section>
     </section>
-
     <section id="payment-page" class="hidden">
       <button id="payment-back-button" class="back-button">Back to cart</button>
       <section id="payment-page-elements">
@@ -183,14 +171,12 @@
         <p id="back-to-main" class="hidden">Returning to home screen in 3 seconds...</p>
       </section>
     </section>
-
     <section id="transactions-page" class="hidden">
       <button id="transactions-back-button" class="back-button">Back to main menu</button>
       <section id="transactions-page-elements" class="center">
       </section>
       <h2 id="transactions-error" class="center"></h2>
     </section>
-
     <section id="error-page" class="hidden">
       <p>Oh snap an error has occured! Please try again later.</p>
     </section>

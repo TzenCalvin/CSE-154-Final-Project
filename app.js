@@ -56,8 +56,7 @@ app.get('/products', async (req, res) => {
 
     res.type('json').send(result);
   } catch (err) {
-    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
-    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+    handleError(res);
   }
 });
 
@@ -78,9 +77,7 @@ app.get("/products/:product", async (req, res) => {
     await db.close();
     res.json(productInfo);
   } catch (err) {
-    res.type("text")
-      .status(SERVER_SIDE_ERROR_STATUS_CODE)
-      .send(SERVER_SIDE_ERROR_MSG);
+    handleError(res);
   }
 });
 
@@ -164,8 +161,7 @@ app.post('/transaction/successful', async (req, res) => {
       res.type('text').send('You must be logged in before purchasing something.');
     }
   } catch (err) {
-    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
-    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+    handleError(res);
   }
 });
 
@@ -224,8 +220,7 @@ app.post('/transaction/status', (req, res) => {
       res.type('text').send('You must be logged in before purchasing something.');
     }
   } catch (err) {
-    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
-    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+    handleError(res);
   }
 });
 
@@ -304,8 +299,7 @@ app.post('/user/login', async (req, res) => {
       res.type('text').send('Missing one or more of the required params.');
     }
   } catch (err) {
-    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
-    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+    handleError(res);
   }
 });
 
@@ -335,8 +329,7 @@ app.post('/user/signup', async (req, res) => {
       res.type('text').send('Missing one or more of the required params.');
     }
   } catch (err) {
-    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
-    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+    handleError(res);
   }
 });
 

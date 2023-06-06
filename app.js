@@ -78,6 +78,8 @@ app.get("/products/:product", async (req, res) => {
   }
 });
 
+
+
 // updates the database for the successful transaction and returns the transaction confirmation code
 app.post('/transaction/successful', async (req, res) => {
   try {

@@ -226,7 +226,7 @@ form button {
   margin-top: 2em;
 }
 
-#cart-list,
+li,
 #empty-cart-msg {
   font-size: 30px;
 }

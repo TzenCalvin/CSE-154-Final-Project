@@ -140,13 +140,17 @@
    * Gets the transaction history for a certain user from the API.
    */
   async function requestTransactionHistory() {
+    id('transactions-page-elements').innerHTML = "";
     try {
       let history = await fetch('/transaction/history/' + localStorage.getItem('username'));
       await statusCheck(history);
       history = await history.json();
+      id('transactions-error').textContent = "";
       displayTransactionHistory(history);
     } catch (err) {
-      handleError();
+      let errorMessage = err + '';
+      errorMessage = errorMessage.substring(7);
+      id('transactions-error').textContent = errorMessage;
     }
   }
 

@@ -210,3 +210,55 @@ success
   - If the user is not logged in, returns an error with the message: `You must be logged in before purchasing something.`
 - Possible 500 errors (all plain text):
   - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`
+
+## Endpoint 7 - Get All Past Transactions of a User.
+**Request Format:** `/transaction/history/:user`
+
+**Query Parameters:** none.
+
+**Request Type**: `GET`
+
+**Returned Data Format**: JSON
+
+**Description:** Given a valid username, returns a JSON with the confirmation code and inventory of every past transaction made by that user.
+
+**Example Request:** `/transaction/history/bean`
+
+**Example Response:**
+```json
+[
+  {
+    "confirmation": 2,
+    "products": {
+      "items": [
+        {
+          "name": "Money Tree",
+          "quantity": 2
+        }
+      ]
+    }
+  },
+  {
+    "confirmation": 3,
+    "products": {
+      "items": [
+        {
+          "name": "Pilea",
+          "quantity": 2
+        },
+        {
+          "name": "Aloe Vera",
+          "quantity": 1
+        }
+      ]
+    }
+  }
+]
+```
+
+**Error Handling:**
+- Possible 400 (invalid request) errors (all plain text):
+  - If given an invalid userna,e returns an error with the message: `User does not exist.`
+  - If the user is not logged in, returns an error with the message: `You must be logged in to view your transaction history.`
+- Possible 500 errors (all plain text):
+  - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`

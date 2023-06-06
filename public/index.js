@@ -81,6 +81,9 @@
     });
   }
 
+  /**
+   * Takes the user from the signup page back to the login page.
+   */
   function goBackToLoginPage() {
     hideAll();
     promptLogin();

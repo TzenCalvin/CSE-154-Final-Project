@@ -81,6 +81,10 @@
       goHome();
     });
     id('payment-button').addEventListener('click', switchToPayment);
+    id('clear-cart-button').addEventListener('click', function() {
+      window.sessionStorage.removeItem("cart");
+      updateCartList();
+    });
   }
 
   /**
@@ -92,6 +96,14 @@
     id('payment-back-button').addEventListener('click', function() {
       switchToCart();
     });
+    id("pay-button").addEventListener("click", processPayment);
+    id("card-number").value = "";
+    id("expiration-date").value = "";
+    id("cvv").value = "";
+  }
+
+  function processPayment() {
+
   }
 
   /**
@@ -99,6 +111,7 @@
    */
   function logoutUser() {
     window.sessionStorage.setItem('logged-in', false);
+    window.sessionStorage.removeItem("cart");
     hideAll();
     id('menu-page').classList.remove('hidden');
     id('login-button').classList.remove('hidden');
@@ -112,30 +125,12 @@
    * the homepage, or asks them to input the correct information or create a new
    * account.
    */
-  async function signupUser() {
+  function signupUser() {
     let data = new FormData();
     data.append('email', id('email').value);
     data.append('username', id('signup-username').value);
     data.append('password', id('signup-password').value);
-    try {
-      let signupStatus = await fetch('/user/signup', {method: 'POST', body: data});
-      await statusCheck(signupStatus);
-      signupStatus = await signupStatus.text();
-      if (signupStatus === 'success') {
-        window.localStorage.setItem('username', '' + id('signup-username').value);
-        window.sessionStorage.setItem('logged-in', true);
-        hideAll();
-        id('menu-page').classList.remove('hidden');
-        id('login-button').classList.add('hidden');
-        id('cart-button').classList.remove('hidden');
-        id('logout-button').classList.remove('hidden');
-        qs('h1').textContent = 'Welcome ' + id('signup-username').value + '!';
-      }
-    } catch (err) {
-      let errorMessage = err + '';
-      errorMessage = errorMessage.substring(7);
-      id('signup-error').textContent = errorMessage;
-    }
+    getLoggedIn(data, "signup");
   }
 
   /**
@@ -160,31 +155,41 @@
    * the homepage, or asks them to input the correct information or create a new
    * account.
    */
-  async function loginUser() {
+  function loginUser() {
     let data = new FormData();
     data.append('username', id('login-username').value);
     data.append('password', id('login-password').value);
+    getLoggedIn(data, "login");
+  }
+
+  /**
+   * Logs in the user if given the right information based on whether their trying to
+   * log into an existing account of signing up with a new account. If invalid parameters
+   * are given, tells the user to put in correct parameters.
+   * @param {FormData} data - all the data needed to login/signup.
+   * @param {String} type - string stating whether the user is trying to login or signup.
+   */
+  async function getLoggedIn(data, type) {
     try {
-      let loginStatus = await fetch('/user/login', {method: 'POST', body: data});
-      await statusCheck(loginStatus);
-      loginStatus = await loginStatus.text();
-      if (loginStatus === 'success') {
-        window.localStorage.setItem('username', '' + id('login-username').value);
+      let status = await fetch('/user/' + type, {method: 'POST', body: data});
+      await statusCheck(status);
+      status = await status.text();
+      if (status === 'success') {
+        window.localStorage.setItem('username', '' + id(type + '-username').value);
         window.sessionStorage.setItem('logged-in', true);
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
         id('logout-button').classList.remove('hidden');
         id('cart-button').classList.remove('hidden');
-        qs('h1').textContent = 'Welcome ' + id('login-username').value + '!';
+        qs('h1').textContent = 'Welcome ' + id(type + '-username').value + '!';
       }
     } catch (err) {
       let errorMessage = err + '';
       errorMessage = errorMessage.substring(7);
-      id('login-error').textContent = errorMessage;
+      id(type + '-error').textContent = errorMessage;
     }
   }
-
   /**
    * Switches the layout of all of the products between a grid and a list layout.
    */
@@ -335,12 +340,22 @@
         cart["items"].push({"name": item, "quantity": quantity});
       }
       window.sessionStorage.setItem("cart", JSON.stringify(cart));
+      generateMessage('Product successfully added to cart.');
     } else {
-      id('product-page-error').textContent = 'You must log in before adding to your cart.';
-      setTimeout(() => {
-        id('product-page-error').textContent = '';
-      }, 5000);
+      generateMessage('You must log in before adding to your cart.');
     }
+  }
+
+  /**
+   * Generates a message to the user about whether or not the product was successfully
+   * added to the cart or an error came up.
+   * @param {String} text - message that will be displayed to user.
+   */
+  function generateMessage(text) {
+    id('product-page-message').textContent = text;
+    setTimeout(() => {
+      id('product-page-message').textContent = '';
+    }, 5000);
   }
 
   /**
@@ -348,15 +363,22 @@
    */
   function updateCartList() {
     id('cart-list').innerHTML = '';
-    let cart = JSON.parse(sessionStorage.getItem('cart'));
-    for (let i = 0; i < cart["items"].length; i++) {
-      let li = gen('li');
-      if (cart["items"][i].name.slice(-1) === 's' || cart["items"][i].quantity === '1') {
-        li.textContent = cart["items"][i].quantity + ' ' + cart["items"][i].name;
-      } else {
-        li.textContent = cart["items"][i].quantity + ' ' + cart["items"][i].name + 's';
+    if (sessionStorage.getItem('cart')) {
+      id("empty-cart-msg").classList.add("hidden");
+      id('cart-list').classList.remove("hidden");
+      let cart = JSON.parse(sessionStorage.getItem('cart'));
+      for (let i = 0; i < cart["items"].length; i++) {
+        let li = gen('li');
+        if (cart["items"][i].name.slice(-1) === 's' || cart["items"][i].quantity === '1') {
+          li.textContent = cart["items"][i].quantity + ' ' + cart["items"][i].name;
+        } else {
+          li.textContent = cart["items"][i].quantity + ' ' + cart["items"][i].name + 's';
+        }
+        id('cart-list').appendChild(li);
       }
-      id('cart-list').appendChild(li);
+    } else {
+      id("empty-cart-msg").classList.remove("hidden");
+      id('cart-list').classList.add("hidden");
     }
   }
 

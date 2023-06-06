@@ -78,7 +78,50 @@ app.get("/products/:product", async (req, res) => {
   }
 });
 
+// Gets the transaction history of the given user
+app.get('/transaction/history/:user', async (req, res) => {
+  try {
+    if (loggedIn(req)) {
+      let db = await getDBConnection();
+      if (await uniqueUsername(req.params.user, db)) {
+        let qry = 'SELECT products FROM transactions JOIN users ON userid=id WHERE username = ?';
+        let userTransactions = await db.all(qry, [req.params.user]);
+        await db.close();
+        if (userTransactions.length === 0) {
+          res.status(400);
+          res.type('text').send('There are no past transactions for this user.');
+        } else {
+          for (let i = 0; i < userTransactions.length; i++) {
+            userTransactions[i].products = JSON.parse(userTransactions[i].products);
+          }
+          res.type('json').send(userTransactions);
+        }
+      } else {
+        res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+        res.type('text').send('User does not exist.');
+      }
+    } else {
+      res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+      res.type('text').send('You must be logged in to view your transaction history.');
+    }
+  } catch (err) {
+    res.status(SERVER_SIDE_ERROR_STATUS_CODE);
+    res.type('text').send(SERVER_SIDE_ERROR_MSG);
+  }
+});
 
+/**
+ * Checks that the given username is not already in the database table
+ * @param {string} username - inputed by the user
+ * @param {sqlite.Database} db - connection to the database table
+ * @returns {JSON} - returns a JSON object indicating the username is already in
+ * the database table, otherwise returns undefined indicating the username is unique
+ */
+async function uniqueUsername(username, db) {
+  let qryUsername = 'SELECT username FROM users WHERE username = ?';
+  let usernameResult = await db.get(qryUsername, [username]);
+  return usernameResult;
+}
 
 // updates the database for the successful transaction and returns the transaction confirmation code
 app.post('/transaction/successful', async (req, res) => {
@@ -258,6 +301,7 @@ app.post('/user/signup', async (req, res) => {
       let db = await getDBConnection();
       if (await uniqueUsername(req.body.username, db)) {
         await db.close();
+
         res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
         res.type('text').send('Username already exists. Please choose a different username.');
       } else if (await uniqueEmail(req.body.email, db)) {
@@ -292,19 +336,6 @@ app.post('/user/signup', async (req, res) => {
  */
 function advSearch(search, itemType, maxPrice, maxSize) {
   return ['%' + search + '%', '%' + search + '%', '%' + search + '%', itemType, maxPrice, maxSize];
-}
-
-/**
- * Checks that the given username is not already in the database table
- * @param {string} username - inputed by the user
- * @param {sqlite.Database} db - connection to the database table
- * @returns {JSON} - returns a JSON object indicating the username is already in
- * the database table, otherwise returns undefined indicating the username is unique
- */
-async function uniqueUsername(username, db) {
-  let qryUsername = 'SELECT username FROM users WHERE username = ?';
-  let usernameResult = await db.get(qryUsername, [username]);
-  return usernameResult;
 }
 
 /**

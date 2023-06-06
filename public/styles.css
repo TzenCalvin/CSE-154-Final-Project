@@ -200,3 +200,8 @@ input {
 #payment-button {
   margin-top: 2em;
 }
+
+#cart-list,
+#empty-cart-msg {
+  font-size: 30px;
+}

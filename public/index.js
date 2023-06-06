@@ -23,7 +23,9 @@
     id('logout-button').addEventListener('click', logoutUser);
     id('signup-button').addEventListener('click', promptSignup);
     id('cart-button').addEventListener('click', switchToCart);
+    id('transactions-button').addEventListener('click', switchToTransactions);
     id('logo').addEventListener("click", goHome);
+    id('payment-button').disabled = false;
     qs("#search-button").disabled = true;
     id("search-button").addEventListener("click", searchProducts);
     id("toggle-filter").checked = false;
@@ -36,13 +38,6 @@
     });
     document.cookie = 'logged-in=false';
     checkIfLoggedIn();
-
-    /**
-     * make function for cart
-     * id("cart-button").addEventListener("click", doSomething);
-     * make funtion for adding to cart
-     * id("add-to-cart-button").addEventListener("click", doSomething);
-     */
   }
 
   /**
@@ -53,6 +48,7 @@
       document.cookie = 'logged-in=true';
       id('login-button').classList.add('hidden');
       id('logout-button').classList.remove('hidden');
+      id('transactions-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');
       qs('h1').textContent = 'Welcome ' + localStorage.getItem('username') + '!';
     }
@@ -82,13 +78,17 @@
     hideAll();
     id('cart-page').classList.remove('hidden');
     updateCartList();
-    id('cart-back-button').addEventListener('click', function() {
-      goHome();
-    });
-    id('payment-button').addEventListener('click', switchToPayment);
+    id('cart-back-button').addEventListener('click', goHome);
+    if (window.sessionStorage.getItem("cart")) {
+      id('payment-button').disabled = false;
+      id('payment-button').addEventListener('click', switchToPayment);
+    } else {
+      id('payment-button').disabled = true;
+    }
     id('clear-cart-button').addEventListener('click', function() {
       window.sessionStorage.removeItem("cart");
       updateCartList();
+      id('payment-button').disabled = true;
     });
   }
 
@@ -98,13 +98,17 @@
   function switchToPayment() {
     hideAll();
     id('payment-page').classList.remove('hidden');
-    id('payment-back-button').addEventListener('click', function() {
-      switchToCart();
-    });
+    id('payment-back-button').addEventListener('click', switchToCart);
     id("pay-button").addEventListener("click", processPayment);
     id("card-number").value = "";
     id("expiration-date").value = "";
     id("cvv").value = "";
+  }
+
+  function switchToTransactions() {
+    hideAll();
+    id('transactions-page').classList.remove('hidden');
+    id('transactions-back-button').addEventListener('click', goHome);
   }
 
   /**
@@ -174,6 +178,7 @@
     id('menu-page').classList.remove('hidden');
     id('login-button').classList.remove('hidden');
     id('logout-button').classList.add('hidden');
+    id('transactions-button').classList.add('hidden');
     id('cart-button').classList.add('hidden');
     qs('h1').textContent = 'Welcome!';
     document.cookie = 'logged-in=false';
@@ -241,6 +246,7 @@
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');
         id('logout-button').classList.remove('hidden');
+        id('transactions-button').classList.remove('hidden');
         id('cart-button').classList.remove('hidden');
         qs('h1').textContent = 'Welcome ' + id(type + '-username').value + '!';
       }

@@ -126,7 +126,6 @@
       history = await history.json();
       displayTransactionHistory(history);
     } catch (err) {
-      console.log(err);
       handleError();
     }
   }

@@ -1,5 +1,5 @@
 # Final Project API Documentation
-The Final Project API provides information about the various plants on our website and a user's purchasing of them.
+The Final Project API provides information about the various plants on our website and handling user logins and transactions.
 
 ## Endpoint 1 - Get Basic Product Information.
 **Request Format:** `/products`
@@ -115,32 +115,7 @@ The Final Project API provides information about the various plants on our websi
 - Possible 500 errors (all plain text):
   - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`
 
-## Endpoint 3 - Check if Transaction Is Successful.
-**Request Format:** `/transaction/status` endpoint with POST parameters of `number`, `date`, and `cvv`.
-
-**Request Type**: `POST`
-
-**Returned Data Format**: Plain Text
-
-**Description:** Given a valid `number`, `date` (in the format of month/year), and `cvv`, returns a plain text message response "success" to indicate transaction went through.
-
-**Example Request:** `/transaction/status` with POST parameters of `number=1234567890123456`, `date=06/23`, and `cvv=123`.
-
-**Example Response:**
-```
-success
-```
-
-**Error Handling:**
-- Possible 400 (invalid request) errors (all plain text):
-  - If missing any of the parameters, returns an error with the message: `Missing one or more of the required params.`
-  - If passed an expired expiration date, returns an error with the message: `Invalid expiration date. Be sure to put in a valid month and year in the form of MM/YY including the / in your input.`
-  - If passed a CVV code that's not 3 digits, returns an error with the message `Invalid CVV. Please input a valid 3 digit CVV number.`
-  - If passed a credit card number that's not 16 digits, returns an error with the message: `Invalid credit card number.`
-- Possible 500 errors (all plain text):
-  - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`
-
-## Endpoint 4 - Adds New User Information to Database.
+## Endpoint 3 - Adds New User Information to Database.
 **Request Format:** `/user/signup` endpoint with POST parameters of `email`, `username`, and `password`.
 
 **Request Type**: `POST`
@@ -164,7 +139,7 @@ success
 - Possible 500 error (all plain text):
   - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`
 
-## Endpoint 5 - Login as a User.
+## Endpoint 4 - Login as a User.
 **Request Format:** `/user/login` endpoint with POST parameters of `username` and `password`.
 
 **Request Type**: `POST`
@@ -187,3 +162,51 @@ success
 - Possible 500 error (all plain text):
   - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`
 
+## Endpoint 5 - Check if Transaction Is Successful.
+**Request Format:** `/transaction/status` endpoint with POST parameters of `number`, `date`, and `cvv`.
+
+**Request Type**: `POST`
+
+**Returned Data Format**: Plain Text
+
+**Description:** Given a valid `number`, `date` (in the format of month/year), and `cvv`, returns a plain text message response "success" to indicate transaction went through.
+
+**Example Request:** `/transaction/status` with POST parameters of `number=1234567890123456`, `date=06/23`, and `cvv=123`.
+
+**Example Response:**
+```
+success
+```
+
+**Error Handling:**
+- Possible 400 (invalid request) errors (all plain text):
+  - If missing any of the parameters, returns an error with the message: `Missing one or more of the required params.`
+  - If passed an expired expiration date, returns an error with the message: `Invalid expiration date. Be sure to put in a valid month and year in the form of MM/YY including the / in your input.`
+  - If passed a CVV code that's not 3 digits, returns an error with the message `Invalid CVV. Please input a valid 3 digit CVV number.`
+  - If passed a credit card number that's not 16 digits, returns an error with the message: `Invalid credit card number.`
+  - If the user is not logged in, returns an error with the message: `You must be logged in before purchasing something.`
+- Possible 500 errors (all plain text):
+  - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`
+
+## Endpoint 6 - Adds New Transaction to Database.
+**Request Format:** `/transaction/successful` endpoint with POST parameter of `cart`.
+
+**Request Type**: `POST`
+
+**Returned Data Format**: Plain Text
+
+**Description:** Given a valid `cart`, adds the transaction to the transactions table in the database and returns the transaction ID.
+
+**Example Request:** `/transaction/successful` with POST parameter of `cart={"username":"coolperson2","items":[{"name":"Snake Plant","quantity":"7"},{"name":"Pothos","quantity":"7"}]}`.
+
+**Example Response:**
+```
+1
+```
+
+**Error Handling:**
+- Possible 400 (invalid request) errors (all plain text):
+  - If missing the `cart` parameter, returns an error with the message: `Missing cart body param.`
+  - If the user is not logged in, returns an error with the message: `You must be logged in before purchasing something.`
+- Possible 500 errors (all plain text):
+  - If something else goes wrong on the server, returns an error with the message: `Oh no! An error occurred on the server. Try again later.`

@@ -81,33 +81,50 @@ app.get("/products/:product", async (req, res) => {
 // updates the database for the successful transaction and returns the transaction confirmation code
 app.post('/transaction/successful', async (req, res) => {
   try {
-    if (req.body.cart) {
-      let cart = JSON.parse(req.body.cart);
-      let items = cart.items;
-      let itemsObject = {'items': items};
-      let db = await getDBConnection();
-      for (let i = 0; i < items.length; i++) {
-        let capacityQry = 'SELECT capacity FROM products WHERE name = ?';
-        let capacityResult = await db.get(capacityQry, items[i].name);
-        await updateCapacity(capacityResult, db, items[i].name, items[i].quantity);
+    if (loggedIn(req)) {
+      if (req.body.cart) {
+        let cart = JSON.parse(req.body.cart);
+        let items = cart.items;
+        let itemsObject = {'items': items};
+        let db = await getDBConnection();
+        for (let i = 0; i < items.length; i++) {
+          let capacityQry = 'SELECT capacity FROM products WHERE name = ?';
+          let capacityResult = await db.get(capacityQry, items[i].name);
+          await updateCapacity(capacityResult, db, items[i].name, items[i].quantity);
+        }
+        let confirmationNumber = getConfirmationNumber(cart, itemsObject, db);
+        await db.close();
+        res.type('text').send(confirmationNumber.confirmation + '');
+      } else {
+        res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+        res.type('text').send('Missing cart body param.');
       }
-      let usernameQry = 'SELECT id FROM users WHERE username = ?';
-      let usernameResult = await db.get(usernameQry, cart.username);
-      let transactionQry = 'INSERT INTO transactions (products, userid) VALUES (?, ?)';
-      await db.get(transactionQry, [JSON.stringify(itemsObject), usernameResult.id]);
-      let confirmationQry = 'SELECT confirmation FROM transactions ORDER BY confirmation DESC';
-      let confirmationNumber = await db.get(confirmationQry);
-      await db.close();
-      res.type('text').send(confirmationNumber.confirmation + '');
     } else {
       res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
-      res.type('text').send('Missing cart body param.');
+      res.type('text').send('You must be logged in before purchasing something.');
     }
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);
     res.type('text').send(SERVER_SIDE_ERROR_MSG);
   }
 });
+
+/**
+ * Returns the confirmation code of the given successful transaction.
+ * @param {JSON} cart - the username and the items of the transaction.
+ * @param {JSON} itemsObject - items of the transaction.
+ * @param {sqlite.Database} db - connection to the database table.
+ * @returns {JSON} - object containing the confimation code for the transaction.
+ */
+async function getConfirmationNumber(cart, itemsObject, db) {
+  let usernameQry = 'SELECT id FROM users WHERE username = ?';
+  let usernameResult = await db.get(usernameQry, cart.username);
+  let transactionQry = 'INSERT INTO transactions (products, userid) VALUES (?, ?)';
+  await db.get(transactionQry, [JSON.stringify(itemsObject), usernameResult.id]);
+  let confirmationQry = 'SELECT confirmation FROM transactions ORDER BY confirmation DESC';
+  let confirmationNumber = await db.get(confirmationQry);
+  return confirmationNumber;
+}
 
 /**
  * Checks to see if the capacity is null. If not, updates the databse accordingly.
@@ -138,10 +155,13 @@ function loggedIn(req) {
 // checks if the transaction is successful or not
 app.post('/transaction/status', (req, res) => {
   try {
-    if (validateTransactionStatusRequest(req, res)) {
-      res.type('text').send('success');
+    if (loggedIn(req)) {
+      if (validateTransactionStatusRequest(req, res)) {
+        res.type('text').send('success');
+      }
     } else {
-      res.type('text').send('boooooooooooooo');
+      res.status(CLIENT_SIDE_ERROR_STATUS_CODE);
+      res.type('text').send('You must be logged in before purchasing something.');
     }
   } catch (err) {
     res.status(SERVER_SIDE_ERROR_STATUS_CODE);

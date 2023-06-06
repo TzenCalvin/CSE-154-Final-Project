@@ -50,7 +50,7 @@
    */
   function checkIfLoggedIn() {
     if (sessionStorage.getItem('logged-in') === 'true') {
-      document.cookie;
+      document.cookie = 'logged-in=true';
       id('login-button').classList.add('hidden');
       id('logout-button').classList.remove('hidden');
       id('cart-button').classList.remove('hidden');
@@ -176,6 +176,7 @@
     id('logout-button').classList.add('hidden');
     id('cart-button').classList.add('hidden');
     qs('h1').textContent = 'Welcome!';
+    document.cookie = 'logged-in=false';
   }
 
   /**
@@ -235,6 +236,7 @@
       if (status === 'success') {
         window.localStorage.setItem('username', '' + id(type + '-username').value);
         window.sessionStorage.setItem('logged-in', true);
+        document.cookie = 'logged-in=true';
         hideAll();
         id('menu-page').classList.remove('hidden');
         id('login-button').classList.add('hidden');

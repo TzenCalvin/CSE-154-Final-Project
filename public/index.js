@@ -294,6 +294,7 @@
     id('main-view-products').innerHTML = '';
     id('main-view-products').classList.remove('product-list');
     id('main-view-products').classList.add('product-grid');
+    id('payment-msg').textContent= "";
   }
 
   /**

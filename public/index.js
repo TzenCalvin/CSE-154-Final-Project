@@ -447,7 +447,7 @@
     }
     id("item-quantity").value = 1;
 
-    if(product === "prank-pic") {
+    if (product === "prank-pic") {
       getPranked();
     } else {
       fetch("/products/" + product)

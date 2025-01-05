@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Final Project
 
 ## Intro
@@ -390,3 +391,7 @@ Doing any of the above is considered a violation of our course academic integrit
 The Paul G Allen School has an entire page on [Academic Misconduct](https://www.cs.washington.edu/academics/misconduct) within the context of Computer Science, and the University of Washington has an entire page on how [Academic Misconduct](https://www.washington.edu/cssc/for-students/academic-misconduct/) is handled on their [Community Standards and Student Conduct](https://www.washington.edu/cssc/) Page. Please acquaint yourself with both of those pages, and in particular how academic misconduct will be reported to the University.
 
 If we find inappropriate content or plagiarism in projects **you will be ineligible for any points on the project**. Ask the instructor if you're unsure if your work is cited appropriately. Any external sources like images should be cited where used in the source code or (ideally) visible in a page footer. Refer to this [copyright example](https://courses.cs.washington.edu/courses/cse154/23sp/resources/assets/code-examples/copyright-examples/copyrightexample2.html) page for how to cite images from different sources.
+=======
+# CSE-154-Final-Project
+Final project for CSE 154 Sp 22, an plant-based e-commerce website to showcase skills in web development
+>>>>>>> origin/main

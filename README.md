@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dd6517d7ab302d42db338da23a8f89528339fae6
 # Final Project
 
 ## Intro

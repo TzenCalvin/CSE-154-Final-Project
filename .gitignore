@@ -2,3 +2,5 @@ node_modules
 .*
 !/.gitignore
 !/.gitlab-ci.yml
+# Local Netlify folder
+.netlify
